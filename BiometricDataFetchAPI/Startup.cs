@@ -53,7 +53,7 @@ namespace BiometricDataFetchAPI
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "HumanResource (V 1.0)");
+                c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Biometric Device Attendance (V 1.0)");
             });
         }
     }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System;
+using System.Net;
 
 namespace BiometricDataFetchAPI.Controllers
 {
@@ -52,6 +53,63 @@ namespace BiometricDataFetchAPI.Controllers
             }
 
         }
+
+
+        [HttpPost("[Action]")]
+        public async Task<DataResult> DeleteUser([FromBody] UserInfo userInfo)
+        {
+            try
+            {
+                DataResult result = new DataResult();
+                if (userInfo.AttendanceDeviceTypeId > 0)
+                {
+                    if (userInfo.DeviceTypeName.ToLower() == "zkteco")
+                    {
+                        var resultData = await _zKTecoAttendance_UserBL.DeleteUser(userInfo);
+                        return resultData;
+                    }
+                    // add with new device type 
+                    else
+                    {
+                        result = new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
+                    }
+                }
+                else
+                {
+                    result = new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type not found." };
+                }
+                return (result);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+
+        [HttpGet("[Action]")]
+        public async Task<DataResult<List<UserInfo>>> GetAllUserInfo(string IPaddress, int Port)
+        {
+            try
+            {
+                DataResult<List<UserInfo>> result = new DataResult<List<UserInfo>>();
+               
+                   var resultData =  _zKTecoAttendance_UserBL.GetAllUserInfo(IPaddress, Port);
+                   return resultData;
+                 
+                
+              
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+
+
 
         //// GET api/values/5
         //[HttpPost(Name = "AttendanceFetchData")]

@@ -37,7 +37,7 @@ namespace Attendance_ZKTeco_Service.Logics
                     List<MachineInfo> lstEnrollData = new List<MachineInfo>();
 
                     CZKEUEMNetClass machine1 = new CZKEUEMNetClass();
-                    bool isConected = machine1.Connect_Net("192.168.20.24", 4370);
+                    bool isConected = machine1.Connect_Net(model.IPAddress, model.Port);
                     if (isConected)
                     {
                         //machine.SSR_SetUserInfo(1, "529", "Bikal Maharjan", "bikal529", 0, true); // User Set
@@ -87,7 +87,7 @@ namespace Attendance_ZKTeco_Service.Logics
                         //disable
 
                     }
-                    List<MachineInfo> data = manipulator.GetLogData(model.DeviceMachineNo, model.IPAddress);
+                    List<MachineInfo> data = manipulator.GetLogData(model.DeviceMachineNo, model.IPAddress,model.Port);
                     if (data.Count > 0)
                     {
                         //Push  Attendance Log Data to HR Server
@@ -107,7 +107,7 @@ namespace Attendance_ZKTeco_Service.Logics
                     }
                     else
                     {
-                        manipulator.ClearGLog(model.DeviceMachineNo, model.IPAddress);
+                        //manipulator.ClearGLog(model.DeviceMachineNo, model.IPAddress);
                         return new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = "No any data found to pull from Attendance Device!!" };
                     }
                 }
