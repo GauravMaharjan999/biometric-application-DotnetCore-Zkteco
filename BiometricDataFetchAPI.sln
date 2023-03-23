@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiometricDataFetchAPI", "BiometricDataFetchAPI\BiometricDataFetchAPI.csproj", "{2CC2F40E-0110-4684-A156-2EA7451341E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Attendance_ZKTeco_Service", "Attendance_ZKTeco_Service\Attendance_ZKTeco_Service.csproj", "{C31929E2-002B-488D-B583-1AB9A5E32B2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttendanceFetch.Models", "AttendanceFetch.Models\AttendanceFetch.Models.csproj", "{766C9A31-1CB9-46B0-82FA-2A14A006EAC9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2CC2F40E-0110-4684-A156-2EA7451341E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CC2F40E-0110-4684-A156-2EA7451341E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CC2F40E-0110-4684-A156-2EA7451341E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CC2F40E-0110-4684-A156-2EA7451341E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C31929E2-002B-488D-B583-1AB9A5E32B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C31929E2-002B-488D-B583-1AB9A5E32B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C31929E2-002B-488D-B583-1AB9A5E32B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C31929E2-002B-488D-B583-1AB9A5E32B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{766C9A31-1CB9-46B0-82FA-2A14A006EAC9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{766C9A31-1CB9-46B0-82FA-2A14A006EAC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{766C9A31-1CB9-46B0-82FA-2A14A006EAC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{766C9A31-1CB9-46B0-82FA-2A14A006EAC9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E2EF3400-A494-479A-8916-0D4B11449F9D}
+	EndGlobalSection
+EndGlobal
