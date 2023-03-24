@@ -1,5 +1,6 @@
 ﻿using Attendance_ZKTeco_Service.Interfaces;
 using Attendance_ZKTeco_Service.Logics;
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,9 @@ namespace BiometricDataFetchAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddHangfireServer();
+
             services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
             services.AddTransient<IZKTecoAttendance_UserBL, ZKTecoAttendance_UserBL>();
             services.AddSwaggerGen(c =>
@@ -47,7 +51,7 @@ namespace BiometricDataFetchAPI
             {
                 app.UseHsts();
             }
-
+            app.UseHangfireDashboard();
             app.UseHttpsRedirection();
             app.UseMvc();
             app.UseSwagger();
