@@ -34,6 +34,7 @@ namespace BiometricDataFetchAPI
 
             services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
             services.AddTransient<IZKTecoAttendance_UserBL, ZKTecoAttendance_UserBL>();
+            services.AddTransient<IJobSchedular , JobSchedular>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1.0", null);
@@ -41,8 +42,15 @@ namespace BiometricDataFetchAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service, IServiceScopeFactory serviceScopeFactory)
         {
+
+            // Hangfire
+            GlobalConfiguration.Configuration
+                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
+
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -52,6 +60,7 @@ namespace BiometricDataFetchAPI
                 app.UseHsts();
             }
             app.UseHangfireDashboard();
+            app.UseHangfireServer();
             app.UseHttpsRedirection();
             app.UseMvc();
             app.UseSwagger();

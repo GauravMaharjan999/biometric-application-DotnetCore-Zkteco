@@ -4,7 +4,6 @@ using AttendanceFetch.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -104,6 +103,17 @@ namespace Attendance_ZKTeco_Service.Logics
             DataResult<List<UserInfo>> dataResult   = new DataResult<List<UserInfo>>();
             DeviceManipulator manipulator = new DeviceManipulator();
             var result = manipulator.GetAllUserInfo(IPaddress, Port);
+            dataResult.Data = result;
+            return dataResult;
+
+
+        }
+
+        public DataResult<UserInfo> GetUserInfoById(int enrollmentNumber, string IPaddress, int Port)
+        {
+            DataResult<UserInfo> dataResult = new DataResult<UserInfo>();
+            DeviceManipulator manipulator = new DeviceManipulator();
+            var result = manipulator.GetUserInfoById(enrollmentNumber, IPaddress, Port);
             dataResult.Data = result;
             return dataResult;
 

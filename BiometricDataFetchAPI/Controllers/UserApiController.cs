@@ -111,6 +111,27 @@ namespace BiometricDataFetchAPI.Controllers
 
 
 
+        [HttpGet("[Action]")]
+        public async Task<DataResult<UserInfo>> GetUserInfoById(int enrollmentNumber,string IPaddress, int Port)
+        {
+            try
+            {
+                DataResult<UserInfo> result = new DataResult<UserInfo>();
+
+                var resultData = _zKTecoAttendance_UserBL.GetUserInfoById(enrollmentNumber,IPaddress,Port);
+                return resultData;
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+
         //// GET api/values/5
         //[HttpPost(Name = "AttendanceFetchData")]
         //public async Task<DataResult> AttendanceFetchData([FromBody] AttendanceDevice attendanceDevice)

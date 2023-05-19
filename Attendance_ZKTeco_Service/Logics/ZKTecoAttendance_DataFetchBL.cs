@@ -40,7 +40,7 @@ namespace Attendance_ZKTeco_Service.Logics
                     bool isConected = machine1.Connect_Net(model.IPAddress, model.Port);
                     if (isConected)
                     {
-                        //machine.SSR_SetUserInfo(1, "529", "Bikal Maharjan", "bikal529", 0, true); // User Set
+                        //machine.SSR_SetUserInfo(1, "866", "Gaurav Maharjan", "gaurav866", 0, true); // User Set
 
 
                         #region DirectFetch

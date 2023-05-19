@@ -3,17 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Reflection.PortableExecutable;
 using System.Text;
 using ZkSoftwareEU;
-
 
 namespace Attendance_ZKTeco_Service.Models
 {
     public class DeviceManipulator
     {
         private readonly CZKEUEMNetClass machine;
-        string IpAddress;
         public DeviceManipulator()
         {
             machine = new CZKEUEMNetClass();
@@ -110,6 +107,8 @@ namespace Attendance_ZKTeco_Service.Models
                     machine.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
                     bool absafsaf = machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
                         ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
+                    bool fr = machine.ReadAllUserID(iMachineNumber);
+                    bool ab = machine.ReadAllTemplate(iMachineNumber);
                     while (machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
                         ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
                     {
@@ -258,15 +257,22 @@ namespace Attendance_ZKTeco_Service.Models
                 }
                 else
                 {
-                    var userinfolist = GetAllUserInfo(userInfo.IPAddress,userInfo.Port);
-                    var duplicateuser = userinfolist.Where(x => x.DwEnrollNumber == userInfo.DwEnrollNumber).FirstOrDefault();
-                    if (duplicateuser != null)
-                    {
-                        return false;
-                    }
+                    
 
-                    var result = machine.SSR_SetUserInfo(userInfo.DwMachineNumber, userInfo.DwEnrollNumber, userInfo.Name, userInfo.Password, 0, true); // User 
-                    return result;
+                    if (Connect_device(userInfo.IPAddress, userInfo.Port))
+                    {
+                        int DwEnrollNumberInString = int.Parse(userInfo.DwEnrollNumber);
+                        var userinfolist = GetUserInfoById(DwEnrollNumberInString, userInfo.IPAddress, userInfo.Port);
+                        if (String.IsNullOrEmpty(userinfolist.Name))
+                        {
+                           
+                            var result = machine.SSR_SetUserInfo(userInfo.DwMachineNumber, userInfo.DwEnrollNumber, userInfo.Name, userInfo.Password, 0, true); // User 
+
+                            return result;
+                        }
+                    }
+                    return false;
+
                 }
             }
             catch (Exception ex)
@@ -303,10 +309,13 @@ namespace Attendance_ZKTeco_Service.Models
                     int dwWorkCode = 0;
                     int Previlege = 0;
                     bool Enabled = true;
+                    int iPrivilege = 0, iTmpLength = 0, iFlag = 0, idwFingerIndex;
+                    string sdwEnrollNumber = string.Empty, sName = string.Empty,
+                             sPassword = string.Empty, sTmpData = string.Empty;
 
                     //machine.EnableDevice(machineNumber, false); // Disable device while processing data
 
-                    machine.ReadAllUserID(machineNumber); // Read all user data from the device
+                    bool abc = machine.ReadAllUserID(machineNumber); // Read all user data from the device
 
                     while (machine.SSR_GetAllUserInfo(machineNumber, ref dwEnrollNumberString,ref Name,ref Password,ref Previlege,ref Enabled))
                     {
@@ -320,11 +329,14 @@ namespace Attendance_ZKTeco_Service.Models
                         userInfo.Password = Password;
                         userInfo.Port = Port;
 
+                        //if (machine.GetUserTmpExStr(machineNumber, dwEnrollNumberString, idwFingerIndex, out iFlag, out sTmpData, out iTmpLength))
+                        //{
+
+                        //}
 
 
 
-
-                        userInfoList.Add(userInfo);
+                            userInfoList.Add(userInfo);
                     }
 
                     //machine.EnableDevice(machineNumber, true); // Enable device again
@@ -347,6 +359,39 @@ namespace Attendance_ZKTeco_Service.Models
 
         }
 
+        public UserInfo GetUserInfoById(int EnrollmentNumber, string IPaddress, int Port)
+        {
+            try
+            {
+                bool isConected = machine.Connect_Net(IPaddress, Port);
+                UserInfo userInfo = new UserInfo();
+                if (isConected)
+                {
+                    int machineNumber = 1; // Default value is 1
+                    string dwEnrollNumberString = EnrollmentNumber.ToString();
+                    string Name = "";
+                    string Password = "";
+                    int Previlege = 0;
+                    bool Enabled = true;
+                    bool getInfo = machine.SSR_GetUserInfo(machineNumber, dwEnrollNumberString, ref Name, ref Password, ref Previlege, ref Enabled);
+                  
+                        userInfo.Name = Name;
+                        userInfo.Password = Password;
+                        userInfo.DwMachineNumber = machineNumber;
+                        userInfo.DwEnrollNumber = dwEnrollNumberString;
+                  
+                 
+                    return userInfo;
+                }
+               return userInfo;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
         public bool DeleteUserInfo(UserInfo userInfo)
         {
             try
@@ -389,13 +434,17 @@ namespace Attendance_ZKTeco_Service.Models
                     {
                         foreach (var userInfo in userInfoList)
                         {
-                            var existingUserInfoList = GetAllUserInfo(userInfo.IPAddress,userInfo.Port);
-                            var duplicateUser = userInfoList.Where(x => x.DwEnrollNumber == userInfo.DwEnrollNumber);
-                            if (duplicateUser != null)
+                            var userinfolist = GetUserInfoById(int.Parse(userInfo.DwEnrollNumber), userInfo.IPAddress, userInfo.Port);
+                            if (String.IsNullOrEmpty(userinfolist.Name))
+                            {
+
+                                var result = machine.SSR_SetUserInfo(userInfo.DwMachineNumber, userInfo.DwEnrollNumber, userInfo.Name, userInfo.Password, 0, true); // User 
+                            }
+                            else
                             {
                                 return false;
+
                             }
-                            var result = machine.SSR_SetUserInfo(userInfo.DwMachineNumber, userInfo.DwEnrollNumber, userInfo.Name, userInfo.Password, 0, true); // User 
                         }
 
 
