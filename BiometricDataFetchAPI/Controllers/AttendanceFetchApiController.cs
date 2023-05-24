@@ -54,5 +54,21 @@ namespace BiometricDataFetchAPI.Controllers
 
         }
 
+        //[HttpPost("[Action]")]
+        //public async Task<DataResult<List<MachineInfo>>> GetTestData()
+        //{
+        //    try
+        //    {
+
+        //      return new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        throw;
+        //    }
+
+        //}
+
     }
 }
