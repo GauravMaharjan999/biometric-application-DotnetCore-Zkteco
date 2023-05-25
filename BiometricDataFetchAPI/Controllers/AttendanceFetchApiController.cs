@@ -2,9 +2,11 @@
 using Attendance_ZKTeco_Service.Models;
 using AttendanceFetch.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using ZkSoftwareEU;
 
@@ -54,6 +56,7 @@ namespace BiometricDataFetchAPI.Controllers
 
         }
 
+    
         //[HttpPost("[Action]")]
         //public async Task<DataResult<List<MachineInfo>>> GetTestData()
         //{
