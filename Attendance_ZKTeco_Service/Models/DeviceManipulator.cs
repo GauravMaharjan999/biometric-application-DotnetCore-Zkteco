@@ -242,6 +242,14 @@ namespace Attendance_ZKTeco_Service.Models
             machine.Disconnect();
             return IsClear;
         }
+
+        public bool ClearLogData(int machineNumber, string IPaddress)
+        {
+            bool IsClear = machine.ClearLogData(machineNumber);
+            bool enable = machine.EnableDevice(machineNumber, true);
+            machine.Disconnect();
+            return IsClear;
+        }
         public void Disconnect()
         {
             machine.Disconnect();

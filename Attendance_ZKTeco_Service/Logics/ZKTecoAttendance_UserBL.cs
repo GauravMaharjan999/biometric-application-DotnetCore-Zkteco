@@ -32,17 +32,30 @@ namespace Attendance_ZKTeco_Service.Logics
                 }
                 try
                 {
-                   var dr= manipulator.SetUserInfo(model);
-                    if (dr==true)
-                    {
+                    var userlist = GetAllUserInfo(model.IPAddress,model.Port);
+                    var isDuplicate = userlist.Data.Any(x => x.DwEnrollNumber == model.DwEnrollNumber);
 
-                        return new DataResult { ResultType = ResultType.Success, Message = $" User Created  successfully in device of IP: !! {model.IPAddress}" };
+                    if (isDuplicate)
+                    {
+                        return new DataResult { ResultType = ResultType.Failed, Message = $" Failed to Create. Duplicate Emp Code found in device of IP: !! {model.IPAddress}" };
+
                     }
                     else
                     {
-                        return new DataResult { ResultType = ResultType.Failed, Message = $" Failed to Create  in device of IP: !! {model.IPAddress}" };
+                        var dr = manipulator.SetUserInfo(model);
+                        if (dr == true)
+                        {
+
+                            return new DataResult { ResultType = ResultType.Success, Message = $" User Created  successfully in device of IP: !! {model.IPAddress}" };
+                        }
+                        else
+                        {
+                            return new DataResult { ResultType = ResultType.Failed, Message = $" Failed to Create  in device of IP: !! {model.IPAddress}" };
+
+                        }
 
                     }
+                    
 
                 }
                 catch (Exception ex)

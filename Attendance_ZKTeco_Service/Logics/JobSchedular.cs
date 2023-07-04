@@ -14,6 +14,7 @@ namespace Attendance_ZKTeco_Service.Logics
     public class JobSchedular : IJobSchedular
     {
         private readonly IZKTecoAttendance_DataFetchBL _zKTecoAttendanceDataFetchBL;
+
         public JobSchedular(IZKTecoAttendance_DataFetchBL zKTecoAttendanceDataFetchBL)
         {
             _zKTecoAttendanceDataFetchBL = zKTecoAttendanceDataFetchBL;
@@ -32,6 +33,31 @@ namespace Attendance_ZKTeco_Service.Logics
 
             var result = _zKTecoAttendanceDataFetchBL.GetData_Zkteco(attendanceDevice);
         }
+
+        public async Task ScheduleAsyncAutoGetBranchListAndPostAttendance()
+        {
+
+
+            AttendanceDevice attendanceDevice = new AttendanceDevice();
+            attendanceDevice.Id = 1;
+            attendanceDevice.DeviceTypeName = "Zkteco";
+            attendanceDevice.AttendanceDeviceTypeId = 1;
+            attendanceDevice.ModelNo = "1";
+            attendanceDevice.IPAddress = "192.168.20.67";
+            attendanceDevice.Port = 4370;
+            attendanceDevice.DeviceMachineNo = 1;
+
+
+            var result = _zKTecoAttendanceDataFetchBL.GetData_Zkteco(attendanceDevice);
+        }
+
+
+        //public async Task ScheduleAsyncAutoPushDataToMainServer()
+        //{
+        //    var result = _attendanceFetchApiBL.PushToMainServer();
+        //}
+
+
 
     }
 

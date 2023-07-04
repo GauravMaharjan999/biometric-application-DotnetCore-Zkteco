@@ -11,6 +11,7 @@ namespace AttendanceFetch.Models
         public string DwEnrollNumber { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
+
        
     }
 }

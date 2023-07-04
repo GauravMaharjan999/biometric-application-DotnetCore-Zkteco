@@ -54,6 +54,65 @@ namespace BiometricDataFetchAPI.Controllers
 
         }
 
+        [HttpPost("[Action]")]
+        public async Task<BulkUserCreationViewModel> SetBulkUsers([FromBody] List<UserInfo> userInfoList)
+        {
+            try
+            {
+                var SuccessCount = 0;
+                var FailedCount = 0;
+                BulkUserCreationViewModel userCreationViewModel = new BulkUserCreationViewModel();
+                List<UserInfo> sslist = new List<UserInfo>();
+                List<UserInfo> fflist = new List<UserInfo>();
+
+                foreach (var userInfo in userInfoList)
+                {
+                    if (userInfo.AttendanceDeviceTypeId > 0)
+                    {
+                        if (userInfo.DeviceTypeName.ToLower() == "zkteco")
+                        {
+                            var resultData = await _zKTecoAttendance_UserBL.SetUser(userInfo);
+                             
+
+                            if (resultData.ResultType == ResultType.Success)
+                            {
+                                sslist.Add(userInfo);
+                                SuccessCount ++;
+                            }
+                            else
+                            {
+                                fflist.Add(userInfo);
+                                FailedCount ++;
+                            }
+                        }
+                        // add with new device type 
+                        //else
+                        //{
+                        //    result = new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
+                        //}
+                    }
+                    else
+                    {
+                        fflist.Add(userInfo);
+                        FailedCount++;
+                    }
+                }
+                
+                userCreationViewModel.SuccessList = sslist; 
+                userCreationViewModel.FailedList = fflist; 
+                userCreationViewModel.SuccessListCount = userCreationViewModel.SuccessList.Count;
+                userCreationViewModel.FailedListCount = userCreationViewModel.FailedList.Count;
+               
+                return (userCreationViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+
 
         [HttpPost("[Action]")]
         public async Task<DataResult> DeleteUser([FromBody] UserInfo userInfo)
@@ -108,6 +167,8 @@ namespace BiometricDataFetchAPI.Controllers
             }
 
         }
+
+        
 
 
 
