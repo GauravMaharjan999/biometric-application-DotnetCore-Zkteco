@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AttendanceFetch.Helpers\AttendanceFetch.Helpers.csproj" />
     <ProjectReference Include="..\AttendanceFetch.Models\AttendanceFetch.Models.csproj" />
     <ProjectReference Include="..\Attendance_ZKTeco_Service\Attendance_ZKTeco_Service.csproj" />
   </ItemGroup>

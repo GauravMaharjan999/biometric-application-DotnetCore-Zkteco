@@ -21,6 +21,7 @@ namespace Attendance_ZKTeco_Service.Models
             get { return DateTime.Parse(DateTime.Parse(DateTimeRecord).ToString("hh:mm:ss tt")); }
         }
         public string Username { get; set; }
+        public int? AttendanceDeviceId { get; set; }
     }
 
 
@@ -29,5 +30,6 @@ namespace Attendance_ZKTeco_Service.Models
         public List<MachineInfo> machineInfoList { get; set; }
         public int AttendanceDeviceId { get; set; }
         public string ClientAlias { get; set; }
+        public int FetchType { get; set; }
     }
 }

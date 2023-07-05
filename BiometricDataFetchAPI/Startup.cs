@@ -1,6 +1,7 @@
 ﻿using Attendance_ZKTeco_Service.Interfaces;
 using Attendance_ZKTeco_Service.Logics;
-using BiometricDataFetchAPI.BusinessLogic;
+using AttendanceFetch.Helpers.MainServerFetchApi;
+using AttendanceFetch.Helpers.Schedular;
 using BiometricDataFetchAPI.Controllers;
 using Hangfire;
 using Microsoft.AspNetCore.Builder;
@@ -37,7 +38,7 @@ namespace BiometricDataFetchAPI
             services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
             services.AddTransient<IZKTecoAttendance_UserBL, ZKTecoAttendance_UserBL>();
             services.AddTransient<IJobSchedular , JobSchedular>();
-            services.AddTransient<IAttendanceFetchApiBL, AttendanceFetchApiBL>();
+            services.AddTransient<IAttendanceFetchBL, AttendanceFetchBL>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1.0", null);
@@ -53,7 +54,7 @@ namespace BiometricDataFetchAPI
                 .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
 
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
-            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {

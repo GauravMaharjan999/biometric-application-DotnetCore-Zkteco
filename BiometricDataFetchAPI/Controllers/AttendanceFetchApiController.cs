@@ -1,7 +1,7 @@
 ﻿using Attendance_ZKTeco_Service.Interfaces;
 using Attendance_ZKTeco_Service.Models;
 using AttendanceFetch.Models;
-using BiometricDataFetchAPI.BusinessLogic;
+//using BiometricDataFetchAPI.BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -16,12 +16,14 @@ namespace BiometricDataFetchAPI.Controllers
     {
         private readonly IZKTecoAttendance_DataFetchBL _zKTecoAttendanceDataFetchBL;
         private readonly IConfiguration _configuration;
-        private readonly IAttendanceFetchApiBL _attendanceFetchApiBL;
-        public AttendanceFetchApiController(IZKTecoAttendance_DataFetchBL zKTecoAttendanceDataFetchBL, IConfiguration configuration, IAttendanceFetchApiBL attendanceFetchApiBL)
+        //private readonly IAttendanceFetchApiBL _attendanceFetchApiBL;
+        public AttendanceFetchApiController(IZKTecoAttendance_DataFetchBL zKTecoAttendanceDataFetchBL, IConfiguration configuration
+            //, IAttendanceFetchApiBL attendanceFetchApiBL
+            )
         {
             _zKTecoAttendanceDataFetchBL = zKTecoAttendanceDataFetchBL;
             _configuration = configuration;
-            _attendanceFetchApiBL = attendanceFetchApiBL;
+            //_attendanceFetchApiBL = attendanceFetchApiBL;
         }
 
         [HttpPost("[Action]")]  
@@ -108,43 +110,43 @@ namespace BiometricDataFetchAPI.Controllers
         //}
 
 
-        [HttpGet("[Action]")]
-        public async Task<DataResult<List<BranchDeviceTaggingViewModel>>> GetBranchListDataFromMainServer()
-        {
-            try
-            {
-                return await _attendanceFetchApiBL.GetBranchListDataFromMainServer();
+        //[HttpGet("[Action]")]
+        //public async Task<DataResult<List<BranchDeviceTaggingViewModel>>> GetBranchListDataFromMainServer()
+        //{
+        //    try
+        //    {
+        //        return await _attendanceFetchApiBL.GetBranchListDataFromMainServer();
 
 
                
-            }
-            catch (Exception ex)
-            {
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                return new DataResult<List<BranchDeviceTaggingViewModel>> { ResultType = ResultType.Exception, Message = ex.Message };
+        //        return new DataResult<List<BranchDeviceTaggingViewModel>> { ResultType = ResultType.Exception, Message = ex.Message };
 
-            }
+        //    }
 
-        }
+        //}
 
 
 
-        [HttpGet("[Action]")]
-        public async Task<DataResult<MachineInfoViewModel>> PushToMainServer()
-        {
-            try
-            {
-                return await _attendanceFetchApiBL.PushToMainServer();
+        //[HttpGet("[Action]")]
+        //public async Task<DataResult<MachineInfoViewModel>> PushToMainServer()
+        //{
+        //    try
+        //    {
+        //        return await _attendanceFetchApiBL.PushToMainServer();
 
-            }
-            catch (Exception ex)
-            {
+        //    }
+        //    catch (Exception ex)
+        //    {
 
-                return new DataResult<MachineInfoViewModel> { ResultType = ResultType.Exception, Message = ex.Message };
+        //        return new DataResult<MachineInfoViewModel> { ResultType = ResultType.Exception, Message = ex.Message };
 
-            }
+        //    }
 
-        }
+        //}
 
     }
 }

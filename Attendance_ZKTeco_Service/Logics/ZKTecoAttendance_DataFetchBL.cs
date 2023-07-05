@@ -91,7 +91,8 @@ namespace Attendance_ZKTeco_Service.Logics
                     List<MachineInfo> data = manipulator.GetLogData(model.DeviceMachineNo, model.IPAddress,model.Port);
                     if (data.Count > 0)
                     {
-                        //Push  Attendance Log Data to HR Server
+                        #region Push  Attendance Log Data to HR Server
+                        //
                         //DataResult result = PushData(data, model.Id, model.StatusChgUserId, model.ClientAlias);
                         //if (result.ResultType == ResultType.Success)
                         //{
@@ -104,6 +105,8 @@ namespace Attendance_ZKTeco_Service.Logics
                         //    manipulator.Disconnect();
                         //    return new DataResult { ResultType = ResultType.Failed, Message = "Data Push Failed on Application!!" };
                         //}
+                        #endregion
+
                         return new DataResult<List<MachineInfo>> { ResultType = ResultType.Success, Message = "Data Retrived from Attendance Device Successfully!",Data=data.ToList() };
                     }
                     else
