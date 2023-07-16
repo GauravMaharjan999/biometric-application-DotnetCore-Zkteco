@@ -67,7 +67,14 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
         {
             try
             {
+                var isNeededToPushFromAttendanceToMainServer = Convert.ToInt32(_configuration.GetSection("AppCustomSettings").GetSection("IsNeededToPushFromAttendanceToMainServer").Value);
+                if (isNeededToPushFromAttendanceToMainServer==0)
+                {
+                    return new DataResult<MachineInfoViewModel> { ResultType = ResultType.Failed, Message = "No Need To Push Data To Main Server" };
+                }
+                
                 List<MachineInfo> machineInfos = new List<MachineInfo>();
+                
                 var branchesDeviceList = await GetBranchListDataFromMainServer();
                 foreach (var devices in branchesDeviceList.Data)
                 {

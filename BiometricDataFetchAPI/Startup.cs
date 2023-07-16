@@ -46,15 +46,17 @@ namespace BiometricDataFetchAPI
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service, IServiceScopeFactory serviceScopeFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service,
+            IServiceScopeFactory serviceScopeFactory)
         {
 
             // Hangfire
             GlobalConfiguration.Configuration
                 .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
+            var fetchIntervalTimeInMinutes = Configuration.GetSection("AppCustomSettings").GetSection("FetchTimeIntervalInMinutes").Value;
 
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.MinuteInterval(Convert.ToInt32( fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {
