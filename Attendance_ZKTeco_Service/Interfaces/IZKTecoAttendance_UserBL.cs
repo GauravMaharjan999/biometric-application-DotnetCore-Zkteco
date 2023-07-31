@@ -12,5 +12,6 @@ namespace Attendance_ZKTeco_Service.Interfaces
         Task<DataResult> DeleteUser(UserInfo model);
         DataResult<List<UserInfo>> GetAllUserInfo(string IPaddress, int Port);
         DataResult<UserInfo> GetUserInfoById(int enrollmentNumber, string IPaddress, int Port);
+        Task<DataResult> SetBulkUser(List<UserInfo> model);
     }
 }

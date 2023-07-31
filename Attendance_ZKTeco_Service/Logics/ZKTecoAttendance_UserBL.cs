@@ -14,6 +14,18 @@ namespace Attendance_ZKTeco_Service.Logics
     public class ZKTecoAttendance_UserBL : IZKTecoAttendance_UserBL
     {
 
+        public bool isDuplicateUserFound (UserInfo model)
+        {
+
+            var result =GetUserInfoById(int.Parse(model.DwEnrollNumber), model.IPAddress, model.Port);
+            if (result == null)
+            {
+                return false;
+            }else
+            {
+                return true;
+            }
+        }
         public async Task<DataResult> SetUser(UserInfo model)
         {
             DeviceManipulator manipulator = new DeviceManipulator();
@@ -32,10 +44,11 @@ namespace Attendance_ZKTeco_Service.Logics
                 }
                 try
                 {
-                    var userlist = GetAllUserInfo(model.IPAddress,model.Port);
-                    var isDuplicate = userlist.Data.Any(x => x.DwEnrollNumber == model.DwEnrollNumber);
+                    //var userlist = GetAllUserInfo(model.IPAddress,model.Port);
+                    //var isDuplicate = userlist.Data.Any(x => x.DwEnrollNumber == model.DwEnrollNumber);
+                    var isDuplicate = isDuplicateUserFound(model);
 
-                    if (isDuplicate)
+                    if (isDuplicate)//check duplicate datat 
                     {
                         return new DataResult { ResultType = ResultType.Failed, Message = $" Failed to Create. Duplicate Emp Code found in device of IP: !! {model.IPAddress}" };
 
@@ -68,6 +81,46 @@ namespace Attendance_ZKTeco_Service.Logics
                 return new DataResult { ResultType = ResultType.Failed, Message = $"Device not connected!! {ex.Message}." };
             };
         }
+
+
+        public async Task<DataResult> SetBulkUser(List<UserInfo> model)
+        {
+            try
+            {
+                DeviceManipulator manipulator = new DeviceManipulator();
+                var setStatus = manipulator.SetMultipleUserInfo(model);
+                
+                if (setStatus == true)
+                {
+                   return new DataResult
+                    {
+                        Message = "Sucessfully Set Bulk User",
+                        ResultType = ResultType.Success,
+
+                    };
+                }
+                else
+                {
+                    return new DataResult
+                    {
+                        Message = "Failed to Set Bulk User",
+                        ResultType = ResultType.Failed,
+
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new DataResult
+                {
+                    Message = ex.Message,
+                    ResultType = ResultType.Exception,
+                };
+            }
+           
+        }
+
         public async Task<DataResult> DeleteUser(UserInfo model)
         {
             DeviceManipulator manipulator = new DeviceManipulator();
@@ -110,7 +163,6 @@ namespace Attendance_ZKTeco_Service.Logics
             };
         }
 
-
         public DataResult<List<UserInfo>> GetAllUserInfo(string IPaddress, int Port)
         {
             DataResult<List<UserInfo>> dataResult   = new DataResult<List<UserInfo>>();
@@ -126,7 +178,7 @@ namespace Attendance_ZKTeco_Service.Logics
         {
             DataResult<UserInfo> dataResult = new DataResult<UserInfo>();
             DeviceManipulator manipulator = new DeviceManipulator();
-            var result = manipulator.GetUserInfoById(enrollmentNumber, IPaddress, Port);
+            var result =  manipulator.GetUserInfoById(enrollmentNumber, IPaddress, Port);
             dataResult.Data = result;
             return dataResult;
 

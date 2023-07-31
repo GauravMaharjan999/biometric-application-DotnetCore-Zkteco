@@ -74,38 +74,48 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
                 }
                 
                 List<MachineInfo> machineInfos = new List<MachineInfo>();
-                
+
                 var branchesDeviceList = await GetBranchListDataFromMainServer();
-                foreach (var devices in branchesDeviceList.Data)
+
+                if (branchesDeviceList.Data != null)
                 {
-                    AttendanceDevice attendanceDevice = new AttendanceDevice
+                    foreach (var devices in branchesDeviceList.Data)
                     {
-                        Id = devices.Id,
-                        AttendanceDeviceTypeId = devices.AttendanceDeviceTypeId,
-                        IPAddress = devices.IPAddress,
-                        Port = devices.Port,
-                        DeviceMachineNo = int.Parse(devices.DeviceMachineNo),
-                        DeviceTypeName = devices.DeviceTypeName,
-                        ModelNo = devices.ModelNo
+                        AttendanceDevice attendanceDevice = new AttendanceDevice
+                        {
+                            Id = devices.Id,
+                            AttendanceDeviceTypeId = devices.AttendanceDeviceTypeId,
+                            IPAddress = devices.IPAddress,
+                            Port = devices.Port,
+                            DeviceMachineNo = int.Parse(devices.DeviceMachineNo),
+                            DeviceTypeName = devices.DeviceTypeName,
+                            ModelNo = devices.ModelNo
 
-                    };
+                        };
 
-                    var dataResult = await _dataFetchBL.GetData_Zkteco(attendanceDevice);
-                    if (dataResult.ResultType == ResultType.Success)
-                    {
-                        machineInfos.AddRange(dataResult.Data);
+                        var dataResult = await _dataFetchBL.GetData_Zkteco(attendanceDevice);
+                        if (dataResult.ResultType == ResultType.Success)
+                        {
+                            machineInfos.AddRange(dataResult.Data);
+                        }
+
+                        machineInfos = machineInfos.Select(c => { c.AttendanceDeviceId = devices.AttendanceDeviceId; return c; }).ToList();
+
+                        //catch failed response
+
                     }
 
-                    machineInfos = machineInfos.Select(c => { c.AttendanceDeviceId = devices.AttendanceDeviceId; return c; }).ToList();
+                    //pushing raw data to main server
 
-                    //catch failed response
-
+                    var pushResult = await PushRawDataToMainServer(machineInfos);
+                    return pushResult;
                 }
+                else
+                {
 
-                //pushing raw data to main server
-
-                var pushResult = await PushRawDataToMainServer(machineInfos);
-                return pushResult;
+                    return new DataResult<MachineInfoViewModel>();
+                }
+                
 
             }
             catch (Exception ex)

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using System;
 using System.Net;
+using System.Linq;
 
 namespace BiometricDataFetchAPI.Controllers
 {
@@ -65,7 +66,12 @@ namespace BiometricDataFetchAPI.Controllers
                 List<UserInfo> sslist = new List<UserInfo>();
                 List<UserInfo> fflist = new List<UserInfo>();
 
-                foreach (var userInfo in userInfoList)
+                var existingList = _zKTecoAttendance_UserBL.GetAllUserInfo("192.168.20.19", 4370).Data.ToList();
+
+                string[] existingEnrollmentIdList = existingList.Select(x => x.DwEnrollNumber).ToArray();
+                var filterList = userInfoList.Where(x =>
+                       !existingEnrollmentIdList.Contains(x.DwEnrollNumber)).ToList();
+                foreach (var userInfo in filterList)
                 {
                     if (userInfo.AttendanceDeviceTypeId > 0)
                     {
@@ -156,9 +162,6 @@ namespace BiometricDataFetchAPI.Controllers
                
                    var resultData =  _zKTecoAttendance_UserBL.GetAllUserInfo(IPaddress, Port);
                    return resultData;
-                 
-                
-              
             }
             catch (Exception ex)
             {
@@ -181,9 +184,6 @@ namespace BiometricDataFetchAPI.Controllers
 
                 var resultData = _zKTecoAttendance_UserBL.GetUserInfoById(enrollmentNumber,IPaddress,Port);
                 return resultData;
-
-
-
             }
             catch (Exception ex)
             {
