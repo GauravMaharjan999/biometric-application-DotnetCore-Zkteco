@@ -103,19 +103,12 @@ namespace Attendance_ZKTeco_Service.Models
 
                     machine.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
                     
-                    bool fr = machine.ReadAllUserID(iMachineNumber);
-                    bool ab = machine.ReadAllTemplate(iMachineNumber);
+                    //bool fr = machine.ReadAllUserID(iMachineNumber);
+                    //bool ab = machine.ReadAllTemplate(iMachineNumber);
                     while (machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
                         ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
                     {
-                        //// Do something with attendance data, for example:
-                        //Console.WriteLine("Enroll Number: " + idwEnrollNumber.ToString());
-                        //Console.WriteLine("Verify Mode: " + idwVerifyMode.ToString());
-                        //Console.WriteLine("In Out Mode: " + idwInOutMode.ToString());
-                        //Console.WriteLine("Date: " + idwYear.ToString() + "-" + idwMonth.ToString() + "-" + idwDay.ToString());
-                        //Console.WriteLine("Time: " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond.ToString());
-                        //Console.WriteLine("Work Code: " + idwWorkCode.ToString());
-
+                        
                         string inputDate = new DateTime(idwYear, idwMonth, idwDay, idwHour, idwMinute, idwSecond).ToString("yyyy-MM-dd HH:mm:ss");
                         MachineInfo objInfo = new MachineInfo();
                         objInfo.MachineNumber = iMachineNumber;
@@ -131,33 +124,7 @@ namespace Attendance_ZKTeco_Service.Models
                     }
 
                     var dadsadad = lstEnrollData;
-                    //var data= await GetLogData(iMachineNumber, "192.168.20.24");
-                    // var abcasdsa = "";
-                    //string idwEnrollNumber = "";
-                    //int idwVerifyMode = 0;
-                    //int idwInOutMode = 0;
-                    //int idwYear = 0;
-                    //int idwMonth = 0;
-                    //int idwDay = 0;
-                    //int idwHour = 0;
-                    //int idwMinute = 0;
-                    //int idwSecond = 0;
-                    //int idwWorkCode = 0; 
-                    //machine.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
-                    //bool absafsaf = machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                    //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
-                    //while (machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                    //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
-                    //{
-                    //    // Do something with attendance data, for example:
-                    //    Console.WriteLine("Enroll Number: " + idwEnrollNumber.ToString());
-                    //    Console.WriteLine("Verify Mode: " + idwVerifyMode.ToString());
-                    //    Console.WriteLine("In Out Mode: " + idwInOutMode.ToString());
-                    //    Console.WriteLine("Date: " + idwYear.ToString() + "-" + idwMonth.ToString() + "-" + idwDay.ToString());
-                    //    Console.WriteLine("Time: " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond.ToString());
-                    //    Console.WriteLine("Work Code: " + idwWorkCode.ToString());
-                    //}
-                    //machine.Disconnect(); //Disconnect from the device
+                    
                     return lstEnrollData;
 
 
@@ -169,61 +136,7 @@ namespace Attendance_ZKTeco_Service.Models
 
 
 
-
-                //#region MyRegion
-
-
-                ////machine.EnableDevice(machineNumber, true);
-                //List<MachineInfo> lstEnrollData = new List<MachineInfo>();
-                //int iMachineNumber = 1; //the device number
-                //string idwEnrollNumber = "";
-                //int idwVerifyMode = 0;
-                //int idwInOutMode = 0;
-                //int idwYear = 0;
-                //int idwMonth = 0;
-                //int idwDay = 0;
-                //int idwHour = 0;
-                //int idwMinute = 0;
-                //int idwSecond = 0;
-                //int idwWorkCode = 0;
-
-                //string userId = "";
-                //string userName = "";
-                //string userCardNo = "";
-                //string userPassword = "";
-                //int abcdef = 1;
-                //bool userEnabled = false;
-                //Connect_device(IPaddress, 4370);
-                //machine.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
-                //bool absafsaf = machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
-                //while (machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
-                //{
-                //    //// Do something with attendance data, for example:
-                //    //Console.WriteLine("Enroll Number: " + idwEnrollNumber.ToString());
-                //    //Console.WriteLine("Verify Mode: " + idwVerifyMode.ToString());
-                //    //Console.WriteLine("In Out Mode: " + idwInOutMode.ToString());
-                //    //Console.WriteLine("Date: " + idwYear.ToString() + "-" + idwMonth.ToString() + "-" + idwDay.ToString());
-                //    //Console.WriteLine("Time: " + idwHour.ToString() + ":" + idwMinute.ToString() + ":" + idwSecond.ToString());
-                //    //Console.WriteLine("Work Code: " + idwWorkCode.ToString());
-
-                //    string inputDate = new DateTime(idwYear, idwMonth, idwDay, idwHour, idwMinute, idwSecond).ToString("yyyy-MM-dd HH:mm:ss");
-                //    MachineInfo objInfo = new MachineInfo();
-                //    objInfo.MachineNumber = iMachineNumber;
-                //    objInfo.IndRegID = int.Parse(idwEnrollNumber);
-                //    objInfo.Mode = idwVerifyMode.ToString();
-                //    objInfo.DateTimeRecord = inputDate;
-                //    objInfo.DeviceIP = "192.168.20.24";
-                //    machine.SSR_GetUserInfo(1, Convert.ToString(objInfo.IndRegID), ref userName, ref userPassword, ref abcdef, ref userEnabled);
-                //    objInfo.Username = userName;
-
-                //    lstEnrollData.Add(objInfo);
-                //    //disable
-                //} 
-                //#endregion
-
-                //return lstEnrollData;
+  
             }
             catch (Exception ex)
             {
