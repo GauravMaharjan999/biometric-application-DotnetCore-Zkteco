@@ -10,6 +10,6 @@ namespace Attendance_ZKTeco_Service.Interfaces
     public interface IZKTecoAttendance_DataFetchBL
     {
         Task<DataResult<List<MachineInfo>>> GetData_Zkteco(AttendanceDevice model);
-        Task<DataResult<List<MachineInfo>>> DeleteData_Zkteco(AttendanceDevice model);
+        Task<DataResult> DeleteData_Zkteco(AttendanceDevice model);
     }
 }

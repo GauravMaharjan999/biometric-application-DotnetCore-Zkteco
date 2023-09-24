@@ -59,5 +59,9 @@ namespace AttendanceFetch.Helpers.Schedular
         {
             var result = _attendanceFetchBL.PushToMainServer();
         }
+        public async Task ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLog()
+        {
+            var result = await _attendanceFetchBL.PushToMainServer(true);
+        }
     }
 }

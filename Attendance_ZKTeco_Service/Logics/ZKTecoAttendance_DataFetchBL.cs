@@ -38,56 +38,56 @@ namespace Attendance_ZKTeco_Service.Logics
                     List<MachineInfo> lstEnrollData = new List<MachineInfo>();
 
                     CZKEUEMNetClass machine1 = new CZKEUEMNetClass();
-                    bool isConected = machine1.Connect_Net(model.IPAddress, model.Port);
-                    if (isConected)
-                    {
-                        //machine.SSR_SetUserInfo(1, "866", "Gaurav Maharjan", "gaurav866", 0, true); // User Set
+                    //bool isConected = machine1.Connect_Net(model.IPAddress, model.Port);
+                    //if (isConected)
+                    //{
+                    //    //machine.SSR_SetUserInfo(1, "866", "Gaurav Maharjan", "gaurav866", 0, true); // User Set
 
 
-                        #region DirectFetch
+                    //    #region DirectFetch
 
-                        //int iMachineNumber = 1; //the device number
-                        //string idwEnrollNumber = "";
-                        //int idwVerifyMode = 0;
-                        //int idwInOutMode = 0;
-                        //int idwYear = 0;
-                        //int idwMonth = 0;
-                        //int idwDay = 0;
-                        //int idwHour = 0;
-                        //int idwMinute = 0;
-                        //int idwSecond = 0;
-                        //int idwWorkCode = 0;
+                    //    //int iMachineNumber = 1; //the device number
+                    //    //string idwEnrollNumber = "";
+                    //    //int idwVerifyMode = 0;
+                    //    //int idwInOutMode = 0;
+                    //    //int idwYear = 0;
+                    //    //int idwMonth = 0;
+                    //    //int idwDay = 0;
+                    //    //int idwHour = 0;
+                    //    //int idwMinute = 0;
+                    //    //int idwSecond = 0;
+                    //    //int idwWorkCode = 0;
 
-                        //string userId = "";
-                        //string userName = "";
-                        //string userCardNo = "";
-                        //string userPassword = "";
-                        //int abcdef = 1;
-                        //bool userEnabled = false;
+                    //    //string userId = "";
+                    //    //string userName = "";
+                    //    //string userCardNo = "";
+                    //    //string userPassword = "";
+                    //    //int abcdef = 1;
+                    //    //bool userEnabled = false;
 
-                        //machine1.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
-                        //bool absafsaf = machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                        //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
-                        //while (machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                        //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
-                        //{
+                    //    //machine1.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
+                    //    //bool absafsaf = machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
+                    //    //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
+                    //    //while (machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
+                    //    //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
+                    //    //{
 
-                        //    string inputDate = new DateTime(idwYear, idwMonth, idwDay, idwHour, idwMinute, idwSecond).ToString("yyyy-MM-dd HH:mm:ss");
-                        //    MachineInfo objInfo = new MachineInfo();
-                        //    objInfo.MachineNumber = iMachineNumber;
-                        //    objInfo.IndRegID = int.Parse(idwEnrollNumber);
-                        //    objInfo.Mode = idwVerifyMode.ToString();
-                        //    objInfo.DateTimeRecord = inputDate;
-                        //    objInfo.DeviceIP = "192.168.20.24";
-                        //    machine1.SSR_GetUserInfo(1, Convert.ToString(objInfo.IndRegID), ref userName, ref userPassword, ref abcdef, ref userEnabled);
-                        //    objInfo.Username = userName;
+                    //    //    string inputDate = new DateTime(idwYear, idwMonth, idwDay, idwHour, idwMinute, idwSecond).ToString("yyyy-MM-dd HH:mm:ss");
+                    //    //    MachineInfo objInfo = new MachineInfo();
+                    //    //    objInfo.MachineNumber = iMachineNumber;
+                    //    //    objInfo.IndRegID = int.Parse(idwEnrollNumber);
+                    //    //    objInfo.Mode = idwVerifyMode.ToString();
+                    //    //    objInfo.DateTimeRecord = inputDate;
+                    //    //    objInfo.DeviceIP = "192.168.20.24";
+                    //    //    machine1.SSR_GetUserInfo(1, Convert.ToString(objInfo.IndRegID), ref userName, ref userPassword, ref abcdef, ref userEnabled);
+                    //    //    objInfo.Username = userName;
 
-                        //    lstEnrollData.Add(objInfo); 
-                        //}
-                        #endregion
-                        //disable
+                    //    //    lstEnrollData.Add(objInfo); 
+                    //    //}
+                    //    #endregion
+                    //    //disable
 
-                    }
+                    //}
                     List<MachineInfo> data = manipulator.GetLogData(model.DeviceMachineNo, model.IPAddress,model.Port);
                     if (data.Count > 0)
                     {
@@ -127,7 +127,7 @@ namespace Attendance_ZKTeco_Service.Logics
         }
 
 
-        public async Task<DataResult<List<MachineInfo>>> DeleteData_Zkteco(AttendanceDevice model)
+        public async Task<DataResult> DeleteData_Zkteco(AttendanceDevice model)
         {
             DeviceManipulator manipulator = new DeviceManipulator();
             try
@@ -135,88 +135,38 @@ namespace Attendance_ZKTeco_Service.Logics
                 //Validation
                 if (model.IPAddress == string.Empty || model.Port <= 0)
                 {
-                    return new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = "The Device IP Address or Port is mandotory !!" };
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The Device IP Address or Port is mandotory !!" };
                 }
 
                 bool Isconnected = manipulator.Connect_device(model.IPAddress, model.Port);
                 if (!Isconnected)
                 {
-                    return new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = "Device not Connected!!" };
+                    return new DataResult { ResultType = ResultType.Failed, Message = "Device not Connected!!" };
                 }
                 try
                 {
-                    List<MachineInfo> lstEnrollData = new List<MachineInfo>();
 
                     CZKEUEMNetClass machine1 = new CZKEUEMNetClass();
-                    bool isConected = machine1.Connect_Net(model.IPAddress, model.Port);
-                    if (isConected)
-                    {
-                        //machine.SSR_SetUserInfo(1, "866", "Gaurav Maharjan", "gaurav866", 0, true); // User Set
 
-
-                        #region DirectFetch
-
-                        //int iMachineNumber = 1; //the device number
-                        //string idwEnrollNumber = "";
-                        //int idwVerifyMode = 0;
-                        //int idwInOutMode = 0;
-                        //int idwYear = 0;
-                        //int idwMonth = 0;
-                        //int idwDay = 0;
-                        //int idwHour = 0;
-                        //int idwMinute = 0;
-                        //int idwSecond = 0;
-                        //int idwWorkCode = 0;
-
-                        //string userId = "";
-                        //string userName = "";
-                        //string userCardNo = "";
-                        //string userPassword = "";
-                        //int abcdef = 1;
-                        //bool userEnabled = false;
-
-                        //machine1.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
-                        //bool absafsaf = machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                        //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
-                        //while (machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                        //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
-                        //{
-
-                        //    string inputDate = new DateTime(idwYear, idwMonth, idwDay, idwHour, idwMinute, idwSecond).ToString("yyyy-MM-dd HH:mm:ss");
-                        //    MachineInfo objInfo = new MachineInfo();
-                        //    objInfo.MachineNumber = iMachineNumber;
-                        //    objInfo.IndRegID = int.Parse(idwEnrollNumber);
-                        //    objInfo.Mode = idwVerifyMode.ToString();
-                        //    objInfo.DateTimeRecord = inputDate;
-                        //    objInfo.DeviceIP = "192.168.20.24";
-                        //    machine1.SSR_GetUserInfo(1, Convert.ToString(objInfo.IndRegID), ref userName, ref userPassword, ref abcdef, ref userEnabled);
-                        //    objInfo.Username = userName;
-
-                        //    lstEnrollData.Add(objInfo); 
-                        //}
-                        #endregion
-                        //disable
-
-                    }
                     bool result  = manipulator.ClearLogData(model.DeviceMachineNo, model.IPAddress);
                     if (result==true)
                     {
-                        return new DataResult<List<MachineInfo>> { ResultType = ResultType.Success, Message = "Data Deleted from Attendance Device Successfully!"};
+                        return new DataResult { ResultType = ResultType.Success, Message = "Data Deleted from Attendance Device Successfully!"};
                     }
                     else
                     {
                         //manipulator.ClearGLog(model.DeviceMachineNo, model.IPAddress);
-                        return new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = "No any data found to pull from Attendance Device!!" };
+                        return new DataResult { ResultType = ResultType.Failed, Message = "No any data found to delete from Attendance Device!!" };
                     }
                 }
                 catch (Exception ex)
                 {
-                    return new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = $"Data pull failed from attendance device!! {ex.Message}" };
+                    return new DataResult { ResultType = ResultType.Exception, Message = $"Data delete failed from attendance device!! {ex.Message}" };
                 };
             }
             catch (Exception ex)
             {
-                return new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = $"Device not connected!! {ex.Message}." };
+                return new DataResult { ResultType = ResultType.Failed, Message = $"Device not connected!! {ex.Message}." };
             };
         }
 

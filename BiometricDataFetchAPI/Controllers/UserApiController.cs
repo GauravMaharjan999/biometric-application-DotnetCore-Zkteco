@@ -71,39 +71,41 @@ namespace BiometricDataFetchAPI.Controllers
                 string[] existingEnrollmentIdList = existingList.Select(x => x.DwEnrollNumber).ToArray();
                 var filterList = userInfoList.Where(x =>
                        !existingEnrollmentIdList.Contains(x.DwEnrollNumber)).ToList();
-                foreach (var userInfo in filterList)
-                {
-                    if (userInfo.AttendanceDeviceTypeId > 0)
-                    {
-                        if (userInfo.DeviceTypeName.ToLower() == "zkteco")
-                        {
-                            var resultData = await _zKTecoAttendance_UserBL.SetUser(userInfo);
-                             
+                //foreach (var userInfo in filterList)
+                //{
+                //    if (userInfo.AttendanceDeviceTypeId > 0)
+                //    {
+                //        if (userInfo.DeviceTypeName.ToLower() == "zkteco")
+                //        {
+                //            var resultData = await _zKTecoAttendance_UserBL.SetUser(userInfo);
 
-                            if (resultData.ResultType == ResultType.Success)
-                            {
-                                sslist.Add(userInfo);
-                                SuccessCount ++;
-                            }
-                            else
-                            {
-                                fflist.Add(userInfo);
-                                FailedCount ++;
-                            }
-                        }
-                        // add with new device type 
-                        //else
-                        //{
-                        //    result = new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
-                        //}
-                    }
-                    else
-                    {
-                        fflist.Add(userInfo);
-                        FailedCount++;
-                    }
-                }
-                
+
+                //            if (resultData.ResultType == ResultType.Success)
+                //            {
+                //                sslist.Add(userInfo);
+                //                SuccessCount ++;
+                //            }
+                //            else
+                //            {
+                //                fflist.Add(userInfo);
+                //                FailedCount ++;
+                //            }
+                //        }
+                //        // add with new device type 
+                //        //else
+                //        //{
+                //        //    result = new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
+                //        //}
+                //    }
+                //    else
+                //    {
+                //        fflist.Add(userInfo);
+                //        FailedCount++;
+                //    }
+                //}
+                var result = _zKTecoAttendance_UserBL.SetBulkUsers(filterList);
+
+
                 userCreationViewModel.SuccessList = sslist; 
                 userCreationViewModel.FailedList = fflist; 
                 userCreationViewModel.SuccessListCount = userCreationViewModel.SuccessList.Count;
@@ -193,6 +195,15 @@ namespace BiometricDataFetchAPI.Controllers
 
         }
 
+        [HttpGet("[Action]")]
+        public async void getexception()
+        {
+           
+                string text = null;
+                int length = text.Length;
+            
+
+        }
         //// GET api/values/5
         //[HttpPost(Name = "AttendanceFetchData")]
         //public async Task<DataResult> AttendanceFetchData([FromBody] AttendanceDevice attendanceDevice)

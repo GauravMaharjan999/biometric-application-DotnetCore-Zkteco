@@ -11,6 +11,7 @@ using AttendanceFetch.Models;
 using Attendance_ZKTeco_Service.Models;
 using Newtonsoft.Json;
 using System.Linq;
+using Hangfire;
 
 namespace AttendanceFetch.Helpers.MainServerFetchApi
 {
@@ -31,7 +32,7 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
             {
                 var BranchId = _configuration.GetSection("AppCustomSettings").GetSection("Branch").Value;
                 var BaseUrl = _configuration.GetSection("AppCustomSettings").GetSection("MainServerUrl").Value;
-                var requestUri = BaseUrl + "api/AttendanceLogApi/PushBulkUsersToDevice/" + BranchId;
+                var requestUri = BaseUrl + HrApiRoute.Get.PushBulkUsersToDevice + BranchId;
                 HttpClient _client = new HttpClient();
                 HttpResponseMessage response = await _client.GetAsync(requestUri);
 
@@ -63,7 +64,7 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
         }
         #region Methods for Push of Data From Attendance Application to Main Server
 
-        public async Task<DataResult<MachineInfoViewModel>> PushToMainServer()
+        public async Task<DataResult<MachineInfoViewModel>> PushToMainServer(bool isDeleteDataRequired = false)
         {
             try
             {
@@ -72,11 +73,9 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
                 {
                     return new DataResult<MachineInfoViewModel> { ResultType = ResultType.Failed, Message = "No Need To Push Data To Main Server" };
                 }
-                
                 List<MachineInfo> machineInfos = new List<MachineInfo>();
-
                 var branchesDeviceList = await GetBranchListDataFromMainServer();
-
+                List<AttendanceDevice> attendanceDevicesToClearAttLogs = new List<AttendanceDevice>();
                 if (branchesDeviceList.Data != null)
                 {
                     foreach (var devices in branchesDeviceList.Data)
@@ -90,29 +89,35 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
                             DeviceMachineNo = int.Parse(devices.DeviceMachineNo),
                             DeviceTypeName = devices.DeviceTypeName,
                             ModelNo = devices.ModelNo
-
                         };
 
                         var dataResult = await _dataFetchBL.GetData_Zkteco(attendanceDevice);
                         if (dataResult.ResultType == ResultType.Success)
                         {
+                            attendanceDevicesToClearAttLogs.Add(attendanceDevice);
                             machineInfos.AddRange(dataResult.Data);
                         }
-
                         machineInfos = machineInfos.Select(c => { c.AttendanceDeviceId = devices.AttendanceDeviceId; return c; }).ToList();
 
                         //catch failed response
-
                     }
 
                     //pushing raw data to main server
-
+                    if (machineInfos.Count()<=0)
+                    {
+                        return new DataResult<MachineInfoViewModel> { ResultType = ResultType.Failed, Message = "No data to fetch" };
+                    }
                     var pushResult = await PushRawDataToMainServer(machineInfos);
+                    if (isDeleteDataRequired)
+                    {
+                        foreach(var device in attendanceDevicesToClearAttLogs) {
+                            BackgroundJob.Schedule(() => DeleteAttLog(device), TimeSpan.FromSeconds(20));
+                        }
+                    }
                     return pushResult;
                 }
                 else
                 {
-
                     return new DataResult<MachineInfoViewModel>();
                 }
                 
@@ -126,13 +131,16 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
             }
 
         }
+
+
         public async Task<DataResult<List<BranchDeviceTaggingViewModel>>> GetBranchListDataFromMainServer()
         {
             try
             {
                 var BranchId = _configuration.GetSection("AppCustomSettings").GetSection("Branch").Value;
                 var BaseUrl = _configuration.GetSection("AppCustomSettings").GetSection("MainServerUrl").Value;
-                var requestUri = BaseUrl + "api/AttendanceLogApi/GetBranchListForAttendanceDevice/" + BranchId;
+                //var requestUri = BaseUrl + "api/AttendanceLogApi/GetBranchListForAttendanceDevice/" + BranchId;
+                var requestUri = BaseUrl + HrApiRoute.Get.BranchList + BranchId;
                 HttpClient _client = new HttpClient();
                 HttpResponseMessage response = await _client.GetAsync(requestUri);
 
@@ -168,17 +176,12 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
             {
                 var BaseUrl = _configuration.GetSection("AppCustomSettings").GetSection("MainServerUrl").Value;
                 var fetchType = Convert.ToInt32(_configuration.GetSection("AppCustomSettings").GetSection("FetchType").Value);
-                //var AttendanceDeviceId = _configuration.GetSection("AppCustomSettings").GetSection("AttendanceDeviceId").Value;
-
-                //var AttendanceDeviceIdinInt = int.Parse(AttendanceDeviceId);
-
-                var requestUri = BaseUrl + "api/AttendanceLogApi/PostDeviceDataToMainServer/";
+                var requestUri = BaseUrl + HrApiRoute.Get.PostDeviceDataToMainServer;
 
                 var machineInfoViewModel = new MachineInfoViewModel
                 {
                     machineInfoList = machineInfos,
                     FetchType= fetchType,
-                    //AttendanceDeviceId = AttendanceDeviceIdinInt,
                     ClientAlias = "Admin"
                 };
                 HttpContent content = new StringContent(JsonConvert.SerializeObject(machineInfoViewModel), Encoding.UTF8, "application/json");
@@ -195,6 +198,13 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
                     return new DataResult<MachineInfoViewModel> { ResultType = ResultType.Failed, Message = "Failed to post in main server", Data = machineInfoViewModel };
                 }
             }
+        }
+
+
+        public async Task<DataResult> DeleteAttLog(AttendanceDevice attendanceDevice)
+        {
+            var result = await _dataFetchBL.DeleteData_Zkteco(attendanceDevice);
+            return result;
         }
 
         #endregion

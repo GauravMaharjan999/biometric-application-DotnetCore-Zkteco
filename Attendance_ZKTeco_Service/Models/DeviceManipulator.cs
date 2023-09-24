@@ -81,9 +81,6 @@ namespace Attendance_ZKTeco_Service.Models
                 bool isConected = machine.Connect_Net(IPaddress, port);
                 if (isConected)
                 {
-                    //machine.SSR_SetUserInfo(1, "529", "Bikal Maharjan", "bikal529", 0, true); // User Set
-
-
 
                     int iMachineNumber = 1; //the device number
                     string idwEnrollNumber = "";
@@ -105,8 +102,7 @@ namespace Attendance_ZKTeco_Service.Models
                     bool userEnabled = false;
 
                     machine.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
-                    bool absafsaf = machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                        ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
+                    
                     bool fr = machine.ReadAllUserID(iMachineNumber);
                     bool ab = machine.ReadAllTemplate(iMachineNumber);
                     while (machine.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
@@ -247,7 +243,7 @@ namespace Attendance_ZKTeco_Service.Models
         {
             bool IsClear = machine.ClearLogData(machineNumber);
             bool enable = machine.EnableDevice(machineNumber, true);
-            machine.Disconnect();
+            //machine.Disconnect();
             return IsClear;
         }
         public void Disconnect()
@@ -442,11 +438,11 @@ namespace Attendance_ZKTeco_Service.Models
                     {
                         foreach (var userInfo in userInfoList)
                         {
-                            var userinfolist = GetUserInfoById(int.Parse(userInfo.DwEnrollNumber), userInfo.IPAddress, userInfo.Port);
-                            if (String.IsNullOrEmpty(userinfolist.Name))
+                            var duplicateUserInfo = GetUserInfoById(int.Parse(userInfo.DwEnrollNumber), userInfo.IPAddress, userInfo.Port);
+                            if (String.IsNullOrEmpty(duplicateUserInfo.Name))
                             {
 
-                                var result = machine.SSR_SetUserInfo(userInfo.DwMachineNumber, userInfo.DwEnrollNumber, userInfo.Name, userInfo.Password, 0, true); // User 
+                                var result = machine. SSR_SetUserInfo(userInfo.DwMachineNumber, userInfo.DwEnrollNumber, userInfo.Name, userInfo.Password, 0, true); // User 
                             }
                             else
                             {

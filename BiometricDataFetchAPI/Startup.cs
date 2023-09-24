@@ -56,7 +56,9 @@ namespace BiometricDataFetchAPI
             var fetchIntervalTimeInMinutes = Configuration.GetSection("AppCustomSettings").GetSection("FetchTimeIntervalInMinutes").Value;
 
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.MinuteInterval(Convert.ToInt32( fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLog(), Cron.Daily(8,30), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLog(), Cron.Daily(20,30), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {
@@ -69,6 +71,7 @@ namespace BiometricDataFetchAPI
             app.UseHangfireDashboard();
             app.UseHangfireServer();
             app.UseHttpsRedirection();
+            app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>

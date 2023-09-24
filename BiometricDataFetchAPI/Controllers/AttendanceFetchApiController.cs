@@ -61,29 +61,26 @@ namespace BiometricDataFetchAPI.Controllers
 
 
         [HttpPost("[Action]")]
-        public async Task<DataResult<List<MachineInfo>>> DeleteData([FromBody] AttendanceDevice attendanceDevice)
+        public async Task<DataResult> DeleteData([FromBody] AttendanceDevice attendanceDevice)
         {
             try
             {
-                DataResult<List<MachineInfo>> result = new DataResult<List<MachineInfo>>();
                 if (attendanceDevice.AttendanceDeviceTypeId > 0)
                 {
                     if (attendanceDevice.DeviceTypeName.ToLower() == "zkteco")
                     {
-                        var resultData = await _zKTecoAttendanceDataFetchBL.DeleteData_Zkteco(attendanceDevice);
-                        return resultData;
+                        return await _zKTecoAttendanceDataFetchBL.DeleteData_Zkteco(attendanceDevice); ;
                     }
                     // add with new device type 
                     else
                     {
-                        result = new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
+                        return new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
                     }
                 }
                 else
                 {
-                    result = new DataResult<List<MachineInfo>> { ResultType = ResultType.Failed, Message = "Attendance Device Type not found." };
+                    return new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type not found." };
                 }
-                return (result);
             }
             catch (Exception ex)
             {

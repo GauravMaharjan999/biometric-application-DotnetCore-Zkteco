@@ -10,6 +10,6 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
     public interface IAttendanceFetchBL
     {
         Task<DataResult<List<BranchDeviceTaggingViewModel>>> GetBranchListDataFromMainServer();
-        Task<DataResult<MachineInfoViewModel>> PushToMainServer();
+        Task<DataResult<MachineInfoViewModel>> PushToMainServer(bool isDeleteDataRequired = false);
     }
 }

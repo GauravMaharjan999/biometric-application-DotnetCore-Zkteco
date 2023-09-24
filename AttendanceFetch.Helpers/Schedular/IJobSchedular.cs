@@ -8,5 +8,6 @@ namespace AttendanceFetch.Helpers.Schedular
     public interface IJobSchedular
     {
         Task ScheduleAsyncAutoPushDataToMainServer();
+        Task ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLog();
     }
 }

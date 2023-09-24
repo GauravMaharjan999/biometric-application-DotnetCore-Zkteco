@@ -83,7 +83,7 @@ namespace Attendance_ZKTeco_Service.Logics
         }
 
 
-        public async Task<DataResult> SetBulkUser(List<UserInfo> model)
+        public async Task<DataResult> SetBulkUsers(List<UserInfo> model)
         {
             try
             {
