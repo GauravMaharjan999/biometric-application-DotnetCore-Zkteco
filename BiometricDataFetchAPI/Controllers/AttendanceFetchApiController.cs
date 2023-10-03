@@ -4,6 +4,7 @@ using AttendanceFetch.Models;
 //using BiometricDataFetchAPI.BusinessLogic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,28 +17,35 @@ namespace BiometricDataFetchAPI.Controllers
     {
         private readonly IZKTecoAttendance_DataFetchBL _zKTecoAttendanceDataFetchBL;
         private readonly IConfiguration _configuration;
+        private readonly ILogger<AttendanceFetchApiController> _logger;
         //private readonly IAttendanceFetchApiBL _attendanceFetchApiBL;
-        public AttendanceFetchApiController(IZKTecoAttendance_DataFetchBL zKTecoAttendanceDataFetchBL, IConfiguration configuration
+        public AttendanceFetchApiController(IZKTecoAttendance_DataFetchBL zKTecoAttendanceDataFetchBL, IConfiguration configuration, ILogger<AttendanceFetchApiController> logger
             //, IAttendanceFetchApiBL attendanceFetchApiBL
             )
         {
             _zKTecoAttendanceDataFetchBL = zKTecoAttendanceDataFetchBL;
             _configuration = configuration;
+            _logger = logger;
             //_attendanceFetchApiBL = attendanceFetchApiBL;
         }
 
         [HttpPost("[Action]")]  
         public async Task<DataResult<List<MachineInfo>>> GetData([FromBody] AttendanceDevice attendanceDevice)
         {
+            
             try
             {
+
                 DataResult<List<MachineInfo>> result = new DataResult<List<MachineInfo>>();
                 if (attendanceDevice.AttendanceDeviceTypeId > 0)
                 {
-                    if (attendanceDevice.DeviceTypeName.ToLower() == "zkteco")
+                    if (attendanceDevice.DeviceTypeName.ToLower().Equals("zkteco"))
                     {
                         var resultData = await _zKTecoAttendanceDataFetchBL.GetData_Zkteco(attendanceDevice);
+
+                        //_logger.LogInformation($"GetData - Successfully Attendance Data Retieved,total data: {resultData.Data.Count}");
                         return resultData;
+
                     }
                     // add with new device type 
                     else

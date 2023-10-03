@@ -18,7 +18,7 @@ namespace Attendance_ZKTeco_Service.Logics
         {
 
             var result =GetUserInfoById(int.Parse(model.DwEnrollNumber), model.IPAddress, model.Port);
-            if (result == null)
+            if (string.IsNullOrEmpty(result.Data.Name))
             {
                 return false;
             }else
@@ -94,7 +94,7 @@ namespace Attendance_ZKTeco_Service.Logics
                 {
                    return new DataResult
                     {
-                        Message = "Sucessfully Set Bulk User",
+                        Message = "Successfully Set Bulk User",
                         ResultType = ResultType.Success,
 
                     };
@@ -143,11 +143,11 @@ namespace Attendance_ZKTeco_Service.Logics
                     if (dr == true)
                     {
 
-                        return new DataResult { ResultType = ResultType.Success, Message = $" User Created  successfully in device of IP: !! {model.IPAddress}" };
+                        return new DataResult { ResultType = ResultType.Success, Message = $" User Deleted  successfully in device of IP: !! {model.IPAddress}" };
                     }
                     else
                     {
-                        return new DataResult { ResultType = ResultType.Failed, Message = $" Failed to Create  in device of IP: !! {model.IPAddress}" };
+                        return new DataResult { ResultType = ResultType.Failed, Message = $" Failed to Delete User in device of IP: !! {model.IPAddress}" };
 
                     }
 

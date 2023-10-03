@@ -65,12 +65,32 @@ namespace BiometricDataFetchAPI.Controllers
                 BulkUserCreationViewModel userCreationViewModel = new BulkUserCreationViewModel();
                 List<UserInfo> sslist = new List<UserInfo>();
                 List<UserInfo> fflist = new List<UserInfo>();
+                //List<UserInfo> finalListToCreate = new List<UserInfo>();
+                //foreach (var userInfo in userInfoList)
+                //{
+                //    var existingList = _zKTecoAttendance_UserBL.GetAllUserInfo(userInfo.IPAddress, userInfo.Port).Data.ToList();
+
+                //    string[] existingEnrollmentIdList = existingList.Select(x => x.DwEnrollNumber).ToArray();
+                //    var filterList = userInfoList.Where(x =>
+                //           !existingEnrollmentIdList.Contains(x.DwEnrollNumber)).ToList();
+
+                //    finalListToCreate.AddRange(filterList); 
+                //}
+
+
+
+
+
+
 
                 var existingList = _zKTecoAttendance_UserBL.GetAllUserInfo("192.168.20.19", 4370).Data.ToList();
 
                 string[] existingEnrollmentIdList = existingList.Select(x => x.DwEnrollNumber).ToArray();
                 var filterList = userInfoList.Where(x =>
                        !existingEnrollmentIdList.Contains(x.DwEnrollNumber)).ToList();
+
+
+
                 //foreach (var userInfo in filterList)
                 //{
                 //    if (userInfo.AttendanceDeviceTypeId > 0)

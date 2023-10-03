@@ -11,9 +11,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Configuration;
 using Microsoft.Extensions.Options;
+using Serilog;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -31,6 +34,10 @@ namespace BiometricDataFetchAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.AddConsole();// Specify the log file name
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
             services.AddHangfireServer();
@@ -43,11 +50,12 @@ namespace BiometricDataFetchAPI
             {
                 c.SwaggerDoc("v1.0", null);
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IServiceProvider service,
-            IServiceScopeFactory serviceScopeFactory)
+            IServiceScopeFactory serviceScopeFactory, ILogger<Startup> logger, ILoggerFactory loggerFactory )
         {
 
             // Hangfire
@@ -58,7 +66,7 @@ namespace BiometricDataFetchAPI
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
             RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
             RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8,30), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19,00), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(12,16), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {
@@ -68,9 +76,14 @@ namespace BiometricDataFetchAPI
             {
                 app.UseHsts();
             }
+            loggerFactory.AddFile($@"{Directory.GetCurrentDirectory()}\logs\log.txt");
+            logger.LogInformation($"-------------------------------------------------------------------------------------------------------------------------------------");
+
+            logger.LogInformation($"----------Application started at {DateTime.Now}----------");
             app.UseHangfireDashboard();
             app.UseHangfireServer();
             app.UseHttpsRedirection();
+            app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<GlobalExceptionMiddleware>();
             app.UseMvc();
             app.UseSwagger();
