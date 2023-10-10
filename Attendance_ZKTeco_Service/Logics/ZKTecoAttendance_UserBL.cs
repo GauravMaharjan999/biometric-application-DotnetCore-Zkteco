@@ -14,14 +14,15 @@ namespace Attendance_ZKTeco_Service.Logics
     public class ZKTecoAttendance_UserBL : IZKTecoAttendance_UserBL
     {
 
-        public bool isDuplicateUserFound (UserInfo model)
+        public bool isDuplicateUserFound(UserInfo model)
         {
 
-            var result =GetUserInfoById(int.Parse(model.DwEnrollNumber), model.IPAddress, model.Port);
+            var result = GetUserInfoById(int.Parse(model.DwEnrollNumber), model.IPAddress, model.Port);
             if (string.IsNullOrEmpty(result.Data.Name))
             {
                 return false;
-            }else
+            }
+            else
             {
                 return true;
             }
@@ -68,12 +69,12 @@ namespace Attendance_ZKTeco_Service.Logics
                         }
 
                     }
-                    
+
 
                 }
                 catch (Exception ex)
                 {
-                    return new DataResult{ ResultType = ResultType.Failed, Message = $"Data pull failed from attendance device!! {ex.Message}" };
+                    return new DataResult { ResultType = ResultType.Failed, Message = $"Data pull failed from attendance device!! {ex.Message}" };
                 };
             }
             catch (Exception ex)
@@ -89,10 +90,10 @@ namespace Attendance_ZKTeco_Service.Logics
             {
                 DeviceManipulator manipulator = new DeviceManipulator();
                 var setStatus = manipulator.SetMultipleUserInfo(model);
-                
+
                 if (setStatus == true)
                 {
-                   return new DataResult
+                    return new DataResult
                     {
                         Message = "Successfully Set Bulk User",
                         ResultType = ResultType.Success,
@@ -118,7 +119,7 @@ namespace Attendance_ZKTeco_Service.Logics
                     ResultType = ResultType.Exception,
                 };
             }
-           
+
         }
 
         public async Task<DataResult> DeleteUser(UserInfo model)
@@ -131,6 +132,7 @@ namespace Attendance_ZKTeco_Service.Logics
                 {
                     return new DataResult { ResultType = ResultType.Failed, Message = "The Device IP Address or Port is mandotory !!" };
                 }
+
 
                 bool Isconnected = manipulator.Connect_device(model.IPAddress, model.Port);
                 if (!Isconnected)
@@ -165,7 +167,7 @@ namespace Attendance_ZKTeco_Service.Logics
 
         public DataResult<List<UserInfo>> GetAllUserInfo(string IPaddress, int Port)
         {
-            DataResult<List<UserInfo>> dataResult   = new DataResult<List<UserInfo>>();
+            DataResult<List<UserInfo>> dataResult = new DataResult<List<UserInfo>>();
             DeviceManipulator manipulator = new DeviceManipulator();
             var result = manipulator.GetAllUserInfo(IPaddress, Port);
             dataResult.Data = result;
@@ -178,12 +180,128 @@ namespace Attendance_ZKTeco_Service.Logics
         {
             DataResult<UserInfo> dataResult = new DataResult<UserInfo>();
             DeviceManipulator manipulator = new DeviceManipulator();
-            var result =  manipulator.GetUserInfoById(enrollmentNumber, IPaddress, Port);
+            var result = manipulator.GetUserInfoById(enrollmentNumber, IPaddress, Port);
             dataResult.Data = result;
             return dataResult;
 
 
         }
+
+        public async Task<DataResult> SetUserWithoutDuplicateCheck(UserInfo model)
+        {
+            DeviceManipulator manipulator = new DeviceManipulator();
+            try
+            {
+                //Validation
+                if (model.IPAddress == string.Empty || model.Port <= 0)
+                {
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The Device IP Address or Port is mandotory !!" };
+                }
+
+                bool Isconnected = manipulator.Connect_device(model.IPAddress, model.Port);
+                if (!Isconnected)
+                {
+                    return new DataResult { ResultType = ResultType.Failed, Message = $"Device not Connected!! IP Address: {model.IPAddress}, Port: {model.Port}" };
+                }
+
+                var dr = manipulator.SetUserInfo(model);
+                if (dr == true)
+                {
+
+                    return new DataResult { ResultType = ResultType.Success, Message = $"User Created successfully !! IP Address: {model.IPAddress}, Port: {model.Port}" };
+                }
+                else
+                {
+                    return new DataResult { ResultType = ResultType.Failed, Message = $"Failed to Create !! IP Address: {model.IPAddress}, Port: {model.Port}" };
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return new DataResult { ResultType = ResultType.Exception, Message = ex.Message };
+            };
+        }
+
+        public async Task<BulkUserCreationViewModel> SetBulkUsers(BulkUserWithDeviceInfoViewModel model)
+        {
+            try
+            {
+                //var SuccessCount = 0;
+                //var FailedCount = 0;
+                BulkUserCreationViewModel userCreationViewModel = new BulkUserCreationViewModel();
+                List<UserInfo> sslist = new List<UserInfo>();
+                List<UserInfo> fflist = new List<UserInfo>();
+                //List<UserInfo> finalListToCreate = new List<UserInfo>();
+                //foreach (var userInfo in userInfoList)
+                //{
+                //    var existingList = _zKTecoAttendance_UserBL.GetAllUserInfo(userInfo.IPAddress, userInfo.Port).Data.ToList();
+
+                //    string[] existingEnrollmentIdList = existingList.Select(x => x.DwEnrollNumber).ToArray();
+                //    var filterList = userInfoList.Where(x =>
+                //           !existingEnrollmentIdList.Contains(x.DwEnrollNumber)).ToList();
+
+                //    finalListToCreate.AddRange(filterList); 
+                //}
+
+                var existingList = GetAllUserInfo(model.AttendanceDevice.IPAddress, model.AttendanceDevice.Port).Data.ToList();
+
+                string[] existingEnrollmentIdList = existingList.Select(x => x.DwEnrollNumber).ToArray();
+                var filterList = model.UserInfoList.Where(x =>
+                       !existingEnrollmentIdList.Contains(x.DwEnrollNumber)).ToList();
+
+
+
+                foreach (var userInfo in filterList)
+                {
+                    if (userInfo.AttendanceDeviceTypeId > 0)
+                    {
+                        if (userInfo.DeviceTypeName.ToLower() == "zkteco")
+                        {
+                            var resultData = await SetUserWithoutDuplicateCheck(userInfo);
+
+                            if (resultData.ResultType == ResultType.Success)
+                            {
+                                sslist.Add(userInfo);
+                            }
+                            else
+                            {
+                                fflist.Add(userInfo);
+                            }
+                        }
+                        // add with new device type 
+                        //else
+                        //{
+                        //    result = new DataResult { ResultType = ResultType.Failed, Message = "Attendance Device Type Invalid !!" };
+                        //}
+                        else
+                        {
+                            fflist.Add(userInfo);
+                        }
+                    }
+                    else
+                    {
+                        fflist.Add(userInfo);
+
+                    }
+
+                }
+
+                userCreationViewModel.SuccessList = sslist;
+                userCreationViewModel.FailedList = fflist;
+                userCreationViewModel.SuccessListCount = userCreationViewModel.SuccessList.Count;
+                userCreationViewModel.FailedListCount = userCreationViewModel.FailedList.Count;
+
+                return (userCreationViewModel);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+        }
+
     }
 
 }

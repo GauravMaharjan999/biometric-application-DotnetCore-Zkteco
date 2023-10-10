@@ -22,6 +22,7 @@ namespace Attendance_ZKTeco_Service.Models
         }
         public string Username { get; set; }
         public int? AttendanceDeviceId { get; set; }
+        public int PunchInOutMode { get; set; }
     }
 
 

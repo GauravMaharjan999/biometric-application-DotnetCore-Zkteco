@@ -116,6 +116,7 @@ namespace Attendance_ZKTeco_Service.Models
                         objInfo.Mode = idwVerifyMode.ToString();
                         objInfo.DateTimeRecord = inputDate;
                         objInfo.DeviceIP = IPaddress;
+                        objInfo.PunchInOutMode = idwInOutMode;
                         machine.SSR_GetUserInfo(1, Convert.ToString(objInfo.IndRegID), ref userName, ref userPassword, ref abcdef, ref userEnabled);
                         objInfo.Username = userName;
 
@@ -174,8 +175,6 @@ namespace Attendance_ZKTeco_Service.Models
                 }
                 else
                 {
-                    
-
                     if (Connect_device(userInfo.IPAddress, userInfo.Port))
                     {
                         int DwEnrollNumberInString = int.Parse(userInfo.DwEnrollNumber);

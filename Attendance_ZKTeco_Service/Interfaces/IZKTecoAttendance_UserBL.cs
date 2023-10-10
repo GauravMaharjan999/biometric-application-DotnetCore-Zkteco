@@ -13,5 +13,7 @@ namespace Attendance_ZKTeco_Service.Interfaces
         DataResult<List<UserInfo>> GetAllUserInfo(string IPaddress, int Port);
         DataResult<UserInfo> GetUserInfoById(int enrollmentNumber, string IPaddress, int Port);
         Task<DataResult> SetBulkUsers(List<UserInfo> model);
+        Task<DataResult> SetUserWithoutDuplicateCheck(UserInfo model);
+        Task<BulkUserCreationViewModel> SetBulkUsers(BulkUserWithDeviceInfoViewModel model);
     }
 }
