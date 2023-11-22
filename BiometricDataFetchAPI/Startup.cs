@@ -4,6 +4,8 @@ using AttendanceFetch.Helpers.MainServerFetchApi;
 using AttendanceFetch.Helpers.Schedular;
 using BiometricDataFetchAPI.Controllers;
 using Hangfire;
+using Hangfire.MemoryStorage;
+using Microsoft.AspNetCore.Antiforgery.Internal;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -39,10 +41,19 @@ namespace BiometricDataFetchAPI
                 loggingBuilder.AddConsole();// Specify the log file name
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddHangfireServer();
+			//services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+			//services.AddHangfire(x => x.UseMemoryStorage());
 
-            services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
+			services.AddHangfire(configuration => configuration
+	                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+	                 .UseSimpleAssemblyNameTypeSerializer()
+	                 .UseRecommendedSerializerSettings()
+	                 .UseMemoryStorage()); // Use in-memory storage
+
+			services.AddHangfireServer();
+			services.AddHostedService<RecurringJobService>();
+			services.AddHostedService<RecurringJobFixTimeService>();
+			services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
             services.AddTransient<IZKTecoAttendance_UserBL, ZKTecoAttendance_UserBL>();
             services.AddTransient<IJobSchedular , JobSchedular>();
             services.AddTransient<IAttendanceFetchBL, AttendanceFetchBL>();
@@ -58,15 +69,26 @@ namespace BiometricDataFetchAPI
             IServiceScopeFactory serviceScopeFactory, ILogger<Startup> logger, ILoggerFactory loggerFactory )
         {
 
-            // Hangfire
-            GlobalConfiguration.Configuration
-                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
+            //// Hangfire
+            //GlobalConfiguration.Configuration
+            //    .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
+            GlobalConfiguration.Configuration.UseMemoryStorage();
             var fetchIntervalTimeInMinutes = Configuration.GetSection("AppCustomSettings").GetSection("FetchTimeIntervalInMinutes").Value;
 
+
+			using (var server = new BackgroundJobServer())
+			{
+
+				//BackgroundJob.Enqueue(() => TestMethod());
+				RecurringJob.AddOrUpdate(() => TestMethod(), Cron.Minutely(), TimeZoneInfo.Local);
+
+			}
+
+
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8,30), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(12,16), TimeZoneInfo.Local);
+            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
+            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8,30), TimeZoneInfo.Local);
+            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19,30), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {
@@ -83,14 +105,34 @@ namespace BiometricDataFetchAPI
             app.UseHangfireDashboard();
             app.UseHangfireServer();
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             app.UseMiddleware<RequestLoggingMiddleware>();
             app.UseMiddleware<GlobalExceptionMiddleware>();
-            app.UseMvc();
+            //app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "AreaRoute",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+                );
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action}/{id?}",
+                    defaults: new { area = "Core", controller = "Home", action = "Index" }
+                );
+            });
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "Biometric Device Attendance (V 1.0)");
             });
+
+           
         }
-    }
+
+		public static void TestMethod()
+		{
+			Console.WriteLine("Hello");
+		}
+	}
 }

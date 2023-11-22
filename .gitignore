@@ -325,3 +325,4 @@ Migrations/
 
 # Visual Studio Code launch.json and task.json
 .vscode/
+/BiometricDataFetchAPI/logs

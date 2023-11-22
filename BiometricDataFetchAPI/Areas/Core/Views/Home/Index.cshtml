@@ -1,0 +1,128 @@
+﻿@using Attendance_ZKTeco_Service.Models;
+@model IEnumerable<BranchDeviceTaggingViewModel>
+
+<style>
+    .nav-tabs .nav-link.active {
+        border: 1px solid gainsboro;
+        color: white;
+        border-bottom: 4px solid white;
+        background-color: #007fff;
+    }
+
+    #header th {
+        /*   top: auto;
+            position: sticky;*/
+        background-color: #666;
+        color: #fff;
+        border: 2px solid #ececec;
+        border-bottom: 2px solid #ececec;
+        /*   z-index: 20;
+            min-height: 30px;
+            height: 30px;
+            text-align: left;*/
+    }
+
+    .headTop th {
+        background-color: darkgray;
+        border: 2px solid #ececec;
+        border-bottom: 2px solid #ececec;
+        text-align: center;
+    }
+
+    .headTr {
+        /*padding: 8px 12px;*/
+        /*display: flex;*/
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        border-radius: 4px 4px 0 0;
+        top: 3px;
+        width: 100%;
+        left: 0;
+        right: 0;
+        /*background-color: #dedede;*/
+        z-index: 20;
+        border: 2px solid #ececec;
+        border-bottom: 2px solid #ececec;
+        /*transition: 0.25s top ease, 0.25s position linear, 0.25s left ease;*/
+        margin-bottom: 12px;
+    }
+
+    .col-id-no {
+        left: 0;
+        position: sticky;
+    }
+
+    .col-first-name {
+        left: 80px;
+        position: sticky;
+    }
+
+    .fixed-header {
+        z-index: 40;
+    }
+</style>
+
+<div asp-validation-summary="All" class="text-danger hidden" hidden></div>
+<div class="panel panel-primary">
+    <div class="row">
+        <div class="fixed-top-header">
+            <h5 class="my-0">Generated Payroll Details</h5>
+            <div class="btn-wrapper">
+                <div class='btns-group'>
+                    <button type="button" id="pq-grid-table-btn" class="btn btn-success btn-sm el-icon">
+                        <span localize="">
+                            <i class="fa fa-tasks"> Change Table To Grid</i>
+                        </span>
+                    </button>
+
+                    &nbsp;
+                    <a href='/Payroll/PayrollProcessing/Index' class='btn btn-sm btn-danger el-icon'><span class='icon ic-close' aria-hidden='true'></span> Exit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="panel-body" id="page-panel-body">
+        <div class="clearfix"></div>
+        <div class="form-horizontal">
+            <div class="row col-md-12">
+
+
+                <div id="grid_table" @*style="margin:auto;"*@></div>
+                @*<div style="width:500px: height:300px; overflow:auto;">*@
+                <table border="1" cellspacing="0" cellpadding="0" height="500px;" id="gridTableData" class="table table-bordered table-responsive table-striped fortune500" style="">
+                    <tbody>
+
+                        <tr valign="middle" class="headTr" id="header">
+                            <th class="">DeviceTypeName</th>
+                            <th class="">IPAddress</th>
+                            <th class="">DeviceMachineNo</th>
+                            <th class="">Port</th>
+                            <th class="">Branchname</th>
+                            <th class="">BranchCode</th>
+                         
+                        </tr>
+
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.DeviceTypeName</td>
+                                <td>@item.IPAddress</td>
+                                <td>@item.DeviceMachineNo</td>
+                                <td>@item.Port</td>
+                                <td>@item.Branchname</td>
+                                <td>@item.BranchCode</td>
+                            </tr>
+                        }
+
+
+                        <!-- repeating rows end -->
+                    </tbody>
+                </table>
+                @*</div>*@
+
+            </div>
+
+        </div>
+    </div>
