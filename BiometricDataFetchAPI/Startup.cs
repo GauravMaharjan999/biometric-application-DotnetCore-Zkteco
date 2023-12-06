@@ -51,8 +51,8 @@ namespace BiometricDataFetchAPI
 	                 .UseMemoryStorage()); // Use in-memory storage
 
 			services.AddHangfireServer();
-			services.AddHostedService<RecurringJobService>();
-			services.AddHostedService<RecurringJobFixTimeService>();
+			//services.AddHostedService<RecurringJobService>();
+			//services.AddHostedService<RecurringJobFixTimeService>();
 			services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
             services.AddTransient<IZKTecoAttendance_UserBL, ZKTecoAttendance_UserBL>();
             services.AddTransient<IJobSchedular , JobSchedular>();
@@ -76,19 +76,12 @@ namespace BiometricDataFetchAPI
             var fetchIntervalTimeInMinutes = Configuration.GetSection("AppCustomSettings").GetSection("FetchTimeIntervalInMinutes").Value;
 
 
-			using (var server = new BackgroundJobServer())
-			{
-
-				//BackgroundJob.Enqueue(() => TestMethod());
-				RecurringJob.AddOrUpdate(() => TestMethod(), Cron.Minutely(), TimeZoneInfo.Local);
-
-			}
 
 
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
-            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8,30), TimeZoneInfo.Local);
-            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19,30), TimeZoneInfo.Local);
+            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8, 30), TimeZoneInfo.Local);
+            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19, 30), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {
@@ -130,9 +123,5 @@ namespace BiometricDataFetchAPI
            
         }
 
-		public static void TestMethod()
-		{
-			Console.WriteLine("Hello");
-		}
 	}
 }

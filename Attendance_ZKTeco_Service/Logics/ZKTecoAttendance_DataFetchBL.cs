@@ -38,56 +38,7 @@ namespace Attendance_ZKTeco_Service.Logics
                     List<MachineInfo> lstEnrollData = new List<MachineInfo>();
 
                     CZKEUEMNetClass machine1 = new CZKEUEMNetClass();
-                    //bool isConected = machine1.Connect_Net(model.IPAddress, model.Port);
-                    //if (isConected)
-                    //{
-                    //    //machine.SSR_SetUserInfo(1, "866", "Gaurav Maharjan", "gaurav866", 0, true); // User Set
-
-
-                    //    #region DirectFetch
-
-                    //    //int iMachineNumber = 1; //the device number
-                    //    //string idwEnrollNumber = "";
-                    //    //int idwVerifyMode = 0;
-                    //    //int idwInOutMode = 0;
-                    //    //int idwYear = 0;
-                    //    //int idwMonth = 0;
-                    //    //int idwDay = 0;
-                    //    //int idwHour = 0;
-                    //    //int idwMinute = 0;
-                    //    //int idwSecond = 0;
-                    //    //int idwWorkCode = 0;
-
-                    //    //string userId = "";
-                    //    //string userName = "";
-                    //    //string userCardNo = "";
-                    //    //string userPassword = "";
-                    //    //int abcdef = 1;
-                    //    //bool userEnabled = false;
-
-                    //    //machine1.ReadAllGLogData(iMachineNumber); //read all the attendance records to the memory       \
-                    //    //bool absafsaf = machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                    //    //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode);
-                    //    //while (machine1.SSR_GetGeneralLogData(iMachineNumber, ref idwEnrollNumber, ref idwVerifyMode, ref idwInOutMode,
-                    //    //    ref idwYear, ref idwMonth, ref idwDay, ref idwHour, ref idwMinute, ref idwSecond, ref idwWorkCode)) //get attendance data one by one from memory
-                    //    //{
-
-                    //    //    string inputDate = new DateTime(idwYear, idwMonth, idwDay, idwHour, idwMinute, idwSecond).ToString("yyyy-MM-dd HH:mm:ss");
-                    //    //    MachineInfo objInfo = new MachineInfo();
-                    //    //    objInfo.MachineNumber = iMachineNumber;
-                    //    //    objInfo.IndRegID = int.Parse(idwEnrollNumber);
-                    //    //    objInfo.Mode = idwVerifyMode.ToString();
-                    //    //    objInfo.DateTimeRecord = inputDate;
-                    //    //    objInfo.DeviceIP = "192.168.20.24";
-                    //    //    machine1.SSR_GetUserInfo(1, Convert.ToString(objInfo.IndRegID), ref userName, ref userPassword, ref abcdef, ref userEnabled);
-                    //    //    objInfo.Username = userName;
-
-                    //    //    lstEnrollData.Add(objInfo); 
-                    //    //}
-                    //    #endregion
-                    //    //disable
-
-                    //}
+                    
                     List<MachineInfo> data = manipulator.GetLogData(model.DeviceMachineNo, model.IPAddress,model.Port);
                     if (data.Count > 0)
                     {
