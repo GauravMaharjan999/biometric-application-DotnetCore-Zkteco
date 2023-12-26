@@ -98,6 +98,23 @@ namespace BiometricDataFetchAPI.Controllers
 
         }
 
+        [HttpPost("[Action]")]
+        public async Task<DataResult> CheckDeviceConnectionStatus([FromQuery] string IPAddress, [FromQuery] int Port=4370)
+        {
+
+            try
+            {
+                return await _zKTecoAttendanceDataFetchBL.CheckDeviceConnectionStatus(IPAddress, Port);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+
+
         //[HttpPost("[Action]")]
         //public async Task<DataResult<List<MachineInfo>>> GetTestData()
         //{
@@ -123,7 +140,7 @@ namespace BiometricDataFetchAPI.Controllers
         //        return await _attendanceFetchApiBL.GetBranchListDataFromMainServer();
 
 
-               
+
         //    }
         //    catch (Exception ex)
         //    {

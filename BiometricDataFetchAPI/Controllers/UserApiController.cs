@@ -145,14 +145,21 @@ namespace BiometricDataFetchAPI.Controllers
         }
 
         [HttpGet("[Action]")]
-        public async void getexception()
+        public async Task<DataResult> SetDeviceTime(string IpAddress, int port, DateTime dateTime )
         {
-           
-                string text = null;
-                int length = text.Length;
-            
+            try
+            {
+                return await _zKTecoAttendance_UserBL.SetDeviceTime(IpAddress, port,dateTime);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
 
         }
+
+
         //// GET api/values/5
         //[HttpPost(Name = "AttendanceFetchData")]
         //public async Task<DataResult> AttendanceFetchData([FromBody] AttendanceDevice attendanceDevice)

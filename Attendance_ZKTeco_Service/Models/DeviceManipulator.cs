@@ -1,4 +1,6 @@
 ﻿using AttendanceFetch.Models;
+using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +53,40 @@ namespace Attendance_ZKTeco_Service.Models
             }
             // return false;
         }
+
+        public DataResult CheckDeviceConnectionStatus(string IPaddress, int Port)
+        {
+            try
+            {
+                string ipAddress = IPaddress;
+                int portNumber = Port; //4370;
+                                       //string port = Port.ToString();
+
+                
+
+                bool isValidIpA = UniversalStatic.ValidateIP(ipAddress);
+                if (!isValidIpA)
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The Device IP is invalid !!" };
+
+
+                isValidIpA = UniversalStatic.PingTheDevice(ipAddress);
+                if (!isValidIpA)
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The device at " + ipAddress + ":" + portNumber + " did not respond!! Ping failed." };
+
+                bool connectNet = machine.Connect_Net(ipAddress, portNumber);
+                if (!connectNet)
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The Device not Connected" };
+
+                return new DataResult { ResultType = ResultType.Success, Message = "The Device Connected Successfully" };
+
+            }
+            catch (Exception ex)
+            {
+
+                return new DataResult { ResultType = ResultType.Exception, Message = ex.Message.ToString() };
+
+            }
+        }
         public bool Check_DeviceTime(string IPaddress, int Port)
         {
             int dwYear = int.Parse(System.DateTime.Now.Year.ToString());
@@ -94,7 +130,7 @@ namespace Attendance_ZKTeco_Service.Models
                     int idwSecond = 0;
                     int idwWorkCode = 0;
 
-                    string userId = "";
+                    string userId = ""; 
                     string userName = "";
                     string userCardNo = "";
                     string userPassword = "";
@@ -382,5 +418,37 @@ namespace Attendance_ZKTeco_Service.Models
 
         }
         #endregion
+
+        public DataResult SetDeviceTime(string IpAddress , int port,DateTime dateTime)
+        {
+            try
+            {
+                // Get current system time
+                DateTime currentTime = dateTime== DateTime.MinValue ? DateTime.Now : dateTime;
+
+                machine.Connect_Net(IpAddress, port);
+                // Set the device time
+                bool setTimeSuccess = machine.SetDeviceTime2(1, currentTime.Year, currentTime.Month, currentTime.Day,
+                                                         currentTime.Hour, currentTime.Minute, currentTime.Second);
+
+                if (setTimeSuccess)
+                {
+                    return new DataResult { ResultType = ResultType.Success, Message = "Set Time Successfully" };
+
+                }
+                else
+                {
+                    return new DataResult { ResultType = ResultType.Success, Message = "Failed to set device time." };
+
+                } 
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+            
+
+        }
     }
 }

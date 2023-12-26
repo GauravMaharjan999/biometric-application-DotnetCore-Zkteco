@@ -99,8 +99,8 @@ namespace BiometricDataFetchAPI
             app.UseHangfireServer();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseMiddleware<RequestLoggingMiddleware>();
-            app.UseMiddleware<GlobalExceptionMiddleware>();
+            
+            //app.UseMiddleware<GlobalExceptionMiddleware>();
             //app.UseMvc();
             app.UseMvc(routes =>
             {

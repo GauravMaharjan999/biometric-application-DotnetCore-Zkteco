@@ -38,8 +38,8 @@ namespace Attendance_ZKTeco_Service.Logics
                     List<MachineInfo> lstEnrollData = new List<MachineInfo>();
 
                     CZKEUEMNetClass machine1 = new CZKEUEMNetClass();
-                    
-                    List<MachineInfo> data = manipulator.GetLogData(model.DeviceMachineNo, model.IPAddress,model.Port);
+
+                    List<MachineInfo> data = manipulator.GetLogData(model.DeviceMachineNo, model.IPAddress, model.Port);
                     if (data.Count > 0)
                     {
                         #region Push  Attendance Log Data to HR Server
@@ -58,7 +58,7 @@ namespace Attendance_ZKTeco_Service.Logics
                         //}
                         #endregion
 
-                        return new DataResult<List<MachineInfo>> { ResultType = ResultType.Success, Message = "Data Retrived from Attendance Device Successfully!",Data=data.ToList() };
+                        return new DataResult<List<MachineInfo>> { ResultType = ResultType.Success, Message = "Data Retrived from Attendance Device Successfully!", Data = data.ToList() };
                     }
                     else
                     {
@@ -99,10 +99,10 @@ namespace Attendance_ZKTeco_Service.Logics
 
                     CZKEUEMNetClass machine1 = new CZKEUEMNetClass();
 
-                    bool result  = manipulator.ClearLogData(model.DeviceMachineNo, model.IPAddress);
-                    if (result==true)
+                    bool result = manipulator.ClearLogData(model.DeviceMachineNo, model.IPAddress);
+                    if (result == true)
                     {
-                        return new DataResult { ResultType = ResultType.Success, Message = "Data Deleted from Attendance Device Successfully!"};
+                        return new DataResult { ResultType = ResultType.Success, Message = "Data Deleted from Attendance Device Successfully!" };
                     }
                     else
                     {
@@ -114,6 +114,27 @@ namespace Attendance_ZKTeco_Service.Logics
                 {
                     return new DataResult { ResultType = ResultType.Exception, Message = $"Data delete failed from attendance device!! {ex.Message}" };
                 };
+            }
+            catch (Exception ex)
+            {
+                return new DataResult { ResultType = ResultType.Failed, Message = $"Device not connected!! {ex.Message}." };
+            };
+        }
+
+
+        public async Task<DataResult> CheckDeviceConnectionStatus(string IPAddress, int Port = 4370)
+        {
+            DeviceManipulator manipulator = new DeviceManipulator();
+            try
+            {
+                //Validation
+                if (IPAddress == string.Empty || Port <= 0)
+                {
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The Device IP Address or Port is mandotory !!" };
+                }
+                return manipulator.CheckDeviceConnectionStatus(IPAddress, Port);
+
+
             }
             catch (Exception ex)
             {

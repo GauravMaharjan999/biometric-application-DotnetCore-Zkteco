@@ -15,5 +15,6 @@ namespace Attendance_ZKTeco_Service.Interfaces
         Task<DataResult> SetBulkUsers(List<UserInfo> model);
         Task<DataResult> SetUserWithoutDuplicateCheck(UserInfo model);
         Task<BulkUserCreationViewModel> SetBulkUsers(BulkUserWithDeviceInfoViewModel model);
+        Task<DataResult> SetDeviceTime(string IpAddress, int port,DateTime dateTime);
     }
 }

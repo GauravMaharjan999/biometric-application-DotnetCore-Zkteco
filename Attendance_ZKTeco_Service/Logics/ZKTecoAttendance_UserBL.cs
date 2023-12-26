@@ -301,6 +301,13 @@ namespace Attendance_ZKTeco_Service.Logics
             }
 
         }
+        public async Task<DataResult> SetDeviceTime(string IpAddress, int port, DateTime dateTime)
+        {
+            DeviceManipulator manipulator = new DeviceManipulator();
+
+            return manipulator.SetDeviceTime(IpAddress, port, dateTime);
+
+        }
 
     }
 
