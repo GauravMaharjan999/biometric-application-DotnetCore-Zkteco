@@ -305,10 +305,19 @@ namespace Attendance_ZKTeco_Service.Logics
         {
             DeviceManipulator manipulator = new DeviceManipulator();
 
-            return manipulator.SetDeviceTime(IpAddress, port, dateTime);
+            return manipulator .SetDeviceTime(IpAddress, port, dateTime);
 
         }
 
+        public DataResult<string> GetDeviceTime(string IpAddress, int port)
+        {
+            DeviceManipulator manipulator = new DeviceManipulator();
+
+            //return manipulator.GetDeviceTime(IpAddress, port);
+            return new DataResult<string> { Data = manipulator.GetDeviceTime(IpAddress, port).ToString(), Message = "Date Retrived Successfully" };
+
+
+        }
     }
 
 }

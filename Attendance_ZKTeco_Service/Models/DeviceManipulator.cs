@@ -87,26 +87,51 @@ namespace Attendance_ZKTeco_Service.Models
 
             }
         }
-        public bool Check_DeviceTime(string IPaddress, int Port)
-        {
-            int dwYear = int.Parse(System.DateTime.Now.Year.ToString());
-            int dwMonth = System.DateTime.Now.Month;
-            int dwDay = System.DateTime.Now.Day;
-            int dwHour = System.DateTime.Now.Hour;
-            int dwMinute = System.DateTime.Now.Minute;
-            int dwSecond = System.DateTime.Now.Second;
+        //public bool Check_DeviceTime(string IPaddress, int Port)
+        //{
+        //    int dwYear = int.Parse(System.DateTime.Now.Year.ToString());
+        //    int dwMonth = System.DateTime.Now.Month;
+        //    int dwDay = System.DateTime.Now.Day;
+        //    int dwHour = System.DateTime.Now.Hour;
+        //    int dwMinute = System.DateTime.Now.Minute;
+        //    int dwSecond = System.DateTime.Now.Second;
 
+
+        //    Connect_device(IPaddress, Port);
+        //    try
+        //    {
+        //        return machine.GetDeviceTime(1, ref dwYear, ref dwMonth, ref dwDay, ref dwHour, ref dwMinute, ref dwSecond);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        public DateTime GetDeviceTime(string IPaddress, int Port)
+        {
+            int dwYear = 0, dwMonth = 0, dwDay = 0, dwHour = 0, dwMinute = 0, dwSecond = 0;
 
             Connect_device(IPaddress, Port);
+
             try
             {
-                return machine.GetDeviceTime(1, ref dwYear, ref dwMonth, ref dwDay, ref dwHour, ref dwMinute, ref dwSecond);
+                if (machine.GetDeviceTime(1, ref dwYear, ref dwMonth, ref dwDay, ref dwHour, ref dwMinute, ref dwSecond))
+                {
+                    return new DateTime(dwYear, dwMonth, dwDay, dwHour, dwMinute, dwSecond);
+                }
+                // If GetDeviceTime fails, you can handle it here
+                // Maybe throw an exception or return DateTime.MinValue or null as appropriate
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+
+            // Default return value if the GetDeviceTime call fails
+            return DateTime.MinValue; // or throw an exception or handle as needed
         }
+
         public List<MachineInfo> GetLogData(int machineNumber, string IPaddress,int port)
         {
             try

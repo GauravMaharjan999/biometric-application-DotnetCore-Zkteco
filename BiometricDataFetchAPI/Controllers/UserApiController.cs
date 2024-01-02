@@ -159,6 +159,21 @@ namespace BiometricDataFetchAPI.Controllers
 
         }
 
+        [HttpGet("[Action]")]
+        public DataResult<string> GetDeviceTime(string IpAddress, int port)
+        {
+            try
+            {
+                return  _zKTecoAttendance_UserBL.GetDeviceTime(IpAddress, port);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
+        }
+
 
         //// GET api/values/5
         //[HttpPost(Name = "AttendanceFetchData")]

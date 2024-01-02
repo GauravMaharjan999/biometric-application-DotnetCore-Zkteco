@@ -41,14 +41,14 @@ namespace BiometricDataFetchAPI
                 loggingBuilder.AddConsole();// Specify the log file name
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-			//services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
-			//services.AddHangfire(x => x.UseMemoryStorage());
+            services.AddHangfire(x => x.UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection")));
+            //services.AddHangfire(x => x.UseMemoryStorage());
 
-			services.AddHangfire(configuration => configuration
-	                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-	                 .UseSimpleAssemblyNameTypeSerializer()
-	                 .UseRecommendedSerializerSettings()
-	                 .UseMemoryStorage()); // Use in-memory storage
+            ////services.AddHangfire(configuration => configuration
+	           ////      .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+	           ////      .UseSimpleAssemblyNameTypeSerializer()
+	           ////      .UseRecommendedSerializerSettings()
+	           ////      .UseMemoryStorage()); // Use in-memory storage
 
 			services.AddHangfireServer();
 			//services.AddHostedService<RecurringJobService>();
@@ -70,8 +70,8 @@ namespace BiometricDataFetchAPI
         {
 
             //// Hangfire
-            //GlobalConfiguration.Configuration
-            //    .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
+            GlobalConfiguration.Configuration
+                .UseSqlServerStorage(Configuration.GetConnectionString("DefaultConnection"));
             GlobalConfiguration.Configuration.UseMemoryStorage();
             var fetchIntervalTimeInMinutes = Configuration.GetSection("AppCustomSettings").GetSection("FetchTimeIntervalInMinutes").Value;
 
@@ -79,9 +79,9 @@ namespace BiometricDataFetchAPI
 
 
             //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
-            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
-            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8, 30), TimeZoneInfo.Local);
-            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19, 30), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8, 30), TimeZoneInfo.Local);
+            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19, 30), TimeZoneInfo.Local);
 
             if (env.IsDevelopment())
             {
