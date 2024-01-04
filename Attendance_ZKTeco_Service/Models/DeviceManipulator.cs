@@ -87,6 +87,38 @@ namespace Attendance_ZKTeco_Service.Models
 
             }
         }
+
+        public DataResult PingDevice(string IPaddress, int Port)
+        {
+            try
+            {
+                string ipAddress = IPaddress;
+                int portNumber = Port; //4370;
+                                       //string port = Port.ToString();
+
+
+
+                bool isValidIpA = UniversalStatic.ValidateIP(ipAddress);
+                if (!isValidIpA)
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The Device IP is invalid !!" };
+
+
+                isValidIpA = UniversalStatic.PingTheDevice(ipAddress);
+                if (!isValidIpA)
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The device at " + ipAddress + ":" + portNumber + " did not respond!! Ping failed." };
+
+               
+
+                return new DataResult { ResultType = ResultType.Success, Message = "The Ping Operation Successfully" };
+
+            }
+            catch (Exception ex)
+            {
+
+                return new DataResult { ResultType = ResultType.Exception, Message = ex.Message.ToString() };
+
+            }
+        }
         //public bool Check_DeviceTime(string IPaddress, int Port)
         //{
         //    int dwYear = int.Parse(System.DateTime.Now.Year.ToString());
@@ -108,7 +140,7 @@ namespace Attendance_ZKTeco_Service.Models
         //    }
         //}
 
-        public DateTime GetDeviceTime(string IPaddress, int Port)
+        public DataResult<string> GetDeviceTime(string IPaddress, int Port)
         {
             int dwYear = 0, dwMonth = 0, dwDay = 0, dwHour = 0, dwMinute = 0, dwSecond = 0;
 
@@ -118,7 +150,13 @@ namespace Attendance_ZKTeco_Service.Models
             {
                 if (machine.GetDeviceTime(1, ref dwYear, ref dwMonth, ref dwDay, ref dwHour, ref dwMinute, ref dwSecond))
                 {
-                    return new DateTime(dwYear, dwMonth, dwDay, dwHour, dwMinute, dwSecond);
+                    var date = new DateTime(dwYear, dwMonth, dwDay, dwHour, dwMinute, dwSecond);
+                    return new DataResult<string> { Data= date.ToString(), Message = "Succesfully Data Retrieved", ResultType = ResultType.Success};
+                }
+                else
+                {
+                    return new DataResult<string> { Data = null, Message = "Failed to retrieved Date", ResultType = ResultType.Failed };
+
                 }
                 // If GetDeviceTime fails, you can handle it here
                 // Maybe throw an exception or return DateTime.MinValue or null as appropriate
@@ -127,9 +165,6 @@ namespace Attendance_ZKTeco_Service.Models
             {
                 throw ex;
             }
-
-            // Default return value if the GetDeviceTime call fails
-            return DateTime.MinValue; // or throw an exception or handle as needed
         }
 
         public List<MachineInfo> GetLogData(int machineNumber, string IPaddress,int port)

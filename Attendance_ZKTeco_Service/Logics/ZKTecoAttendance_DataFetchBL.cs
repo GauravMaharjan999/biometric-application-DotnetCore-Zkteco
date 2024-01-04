@@ -141,6 +141,25 @@ namespace Attendance_ZKTeco_Service.Logics
                 return new DataResult { ResultType = ResultType.Failed, Message = $"Device not connected!! {ex.Message}." };
             };
         }
+        public async Task<DataResult> PingDevice(string IPAddress, int Port = 4370)
+        {
+            DeviceManipulator manipulator = new DeviceManipulator();
+            try
+            {
+                //Validation
+                if (IPAddress == string.Empty || Port <= 0)
+                {
+                    return new DataResult { ResultType = ResultType.Failed, Message = "The Device IP Address or Port is mandotory !!" };
+                }
+                return manipulator.PingDevice(IPAddress, Port);
+
+
+            }
+            catch (Exception ex)
+            {
+                return new DataResult { ResultType = ResultType.Failed, Message = $"Device ping operation failed connected!! {ex.Message}." };
+            };
+        }
 
 
 

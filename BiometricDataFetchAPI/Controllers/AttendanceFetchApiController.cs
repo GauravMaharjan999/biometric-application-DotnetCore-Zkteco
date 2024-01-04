@@ -98,21 +98,6 @@ namespace BiometricDataFetchAPI.Controllers
 
         }
 
-        [HttpPost("[Action]")]
-        public async Task<DataResult> CheckDeviceConnectionStatus([FromQuery] string IPAddress, [FromQuery] int Port=4370)
-        {
-
-            try
-            {
-                return await _zKTecoAttendanceDataFetchBL.CheckDeviceConnectionStatus(IPAddress, Port);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
-
-        }
 
 
         //[HttpPost("[Action]")]

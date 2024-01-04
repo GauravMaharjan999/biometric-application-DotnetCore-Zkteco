@@ -314,7 +314,7 @@ namespace Attendance_ZKTeco_Service.Logics
             DeviceManipulator manipulator = new DeviceManipulator();
 
             //return manipulator.GetDeviceTime(IpAddress, port);
-            return new DataResult<string> { Data = manipulator.GetDeviceTime(IpAddress, port).ToString(), Message = "Date Retrived Successfully" };
+            return manipulator.GetDeviceTime(IpAddress, port);
 
 
         }

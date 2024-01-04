@@ -12,5 +12,6 @@ namespace Attendance_ZKTeco_Service.Interfaces
         Task<DataResult<List<MachineInfo>>> GetData_Zkteco(AttendanceDevice model);
         Task<DataResult> DeleteData_Zkteco(AttendanceDevice model);
         Task<DataResult> CheckDeviceConnectionStatus(string IPAddress, int Port = 4370);
+        Task<DataResult> PingDevice(string IPAddress, int Port = 4370);
     }
 }
