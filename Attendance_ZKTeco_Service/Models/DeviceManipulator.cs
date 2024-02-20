@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -155,7 +156,7 @@ namespace Attendance_ZKTeco_Service.Models
                 }
                 else
                 {
-                    return new DataResult<string> { Data = null, Message = "Failed to retrieved Date", ResultType = ResultType.Failed };
+                    return new DataResult<string> { Data = null, Message = "Failed to retrieved Date and Time", ResultType = ResultType.Failed };
 
                 }
                 // If GetDeviceTime fails, you can handle it here
@@ -256,9 +257,49 @@ namespace Attendance_ZKTeco_Service.Models
             //machine.Disconnect();
             return IsClear;
         }
+        //public bool ClearTimeLogData(int machineNumber, string IPaddress)
+        //{
+        //    string deviceIP = "YourDeviceIP"; // Replace with the actual device IP address
+        //    int devicePort = 4370; // Replace with the actual device port
+        //    DateTime startTime = new DateTime(2023, 1, 1, 0, 0, 0);
+        //    DateTime endTime = new DateTime(2023, 12, 31, 23, 59, 59);
+
+        //    bool isConnected = machine.Connect_Net(deviceIP, devicePort);
+
+        //    if (isConnected)
+        //    {
+        //        // Fetch all attendance logs
+        //        while (machine.ReadGeneralLogData(1))
+        //        {
+        //            // Check if the log timestamp falls within your desired time range
+        //            DateTime logTime = DateTime.ParseExact(machine.AttendanceTime, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
+
+        //            if (logTime >= startTime && logTime <= endTime)
+        //            {
+        //                // Delete the log entry
+        //                machine.SSR_DelLogByTime_Spa();
+        //            }
+        //        }
+
+        //        // Disconnect from the device
+        //        machine.Disconnect();
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("Connection to the device failed.");
+        //    }
+        //}
+
+       
+
         public void Disconnect()
         {
             machine.Disconnect();
+        }
+
+        public bool Restart(int machineNumber)
+        {
+            return machine.RestartDevice(machineNumber);
         }
         #region UserPart
         public bool SetUserInfo(UserInfo userInfo)

@@ -318,6 +318,25 @@ namespace Attendance_ZKTeco_Service.Logics
 
 
         }
+        public DataResult<string> Restart(AttendanceDevice attendanceDevice)
+        {
+            DeviceManipulator manipulator = new DeviceManipulator();
+
+            manipulator.Connect_device(attendanceDevice.IPAddress, attendanceDevice.Port);
+            //return manipulator.GetDeviceTime(IpAddress, port);
+            var result = manipulator.Restart(attendanceDevice.DeviceMachineNo);
+            if (result == true)
+            {
+                return new DataResult<string> { Message = "Sucess", ResultType = ResultType.Success };
+            }
+            else
+            {
+                return new DataResult<string> { Message = "Failed", ResultType = ResultType.Failed };
+
+            }
+
+
+        }
     }
 
 }

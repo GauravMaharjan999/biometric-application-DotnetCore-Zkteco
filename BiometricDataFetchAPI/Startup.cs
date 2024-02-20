@@ -1,4 +1,4 @@
-﻿using Attendance_ZKTeco_Service.Interfaces;
+﻿ using Attendance_ZKTeco_Service.Interfaces;
 using Attendance_ZKTeco_Service.Logics;
 using AttendanceFetch.Helpers.MainServerFetchApi;
 using AttendanceFetch.Helpers.Schedular;
@@ -51,9 +51,15 @@ namespace BiometricDataFetchAPI
 	           ////      .UseMemoryStorage()); // Use in-memory storage
 
 			services.AddHangfireServer();
-			//services.AddHostedService<RecurringJobService>();
-			//services.AddHostedService<RecurringJobFixTimeService>();
-			services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
+
+            var IsInMemoryRecurringJobRequired =  Configuration.GetSection("AppCustomSettings").GetSection("IsInMemoryRecurringJobRequired").Value;
+
+            if (int.Parse(IsInMemoryRecurringJobRequired) == 1)
+            {
+                services.AddHostedService<RecurringJobService>();
+                services.AddHostedService<RecurringJobFixTimeService>();
+            }
+            services.AddTransient<IZKTecoAttendance_DataFetchBL, ZKTecoAttendance_DataFetchBL>();
             services.AddTransient<IZKTecoAttendance_UserBL, ZKTecoAttendance_UserBL>();
             services.AddTransient<IJobSchedular , JobSchedular>();
             services.AddTransient<IAttendanceFetchBL, AttendanceFetchBL>();
@@ -77,12 +83,16 @@ namespace BiometricDataFetchAPI
 
 
 
+            var IsHangFireRequired = Configuration.GetSection("AppCustomSettings").GetSection("IsHangFireRequired").Value;
 
-            //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8, 30), TimeZoneInfo.Local);
-            RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19, 30), TimeZoneInfo.Local);
+            if (int.Parse(IsHangFireRequired) == 1)
+            {
+                //RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoGetAttendance(), Cron.MinuteInterval(10), TimeZoneInfo.Local);
+                RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServer(), Cron.Hourly(Convert.ToInt32(fetchIntervalTimeInMinutes)), TimeZoneInfo.Local);
+                RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogMorning(), Cron.Daily(8, 30), TimeZoneInfo.Local);
+                RecurringJob.AddOrUpdate(() => service.GetRequiredService<IJobSchedular>().ScheduleAsyncAutoPushDataToMainServerAndDeleteAttLogEvening(), Cron.Daily(19, 30), TimeZoneInfo.Local);
 
+            }
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

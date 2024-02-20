@@ -244,7 +244,7 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
             var result = await _dataFetchBL.DeleteData_Zkteco(attendanceDevice);
             return result;
         }
-
+        
         #endregion
     }
 }

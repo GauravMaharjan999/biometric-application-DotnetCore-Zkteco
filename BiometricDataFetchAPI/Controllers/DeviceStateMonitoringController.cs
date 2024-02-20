@@ -79,6 +79,13 @@ namespace BiometricDataFetchAPI.Controllers
             }
 
         }
+        [HttpPost("[Action]")]
+        public DataResult<string> Restart([FromBody] AttendanceDevice attendanceDevice)
+        {
+
+            var result = _zKTecoAttendance_UserBL.Restart(attendanceDevice);
+            return result;
+        }
 
     }
 }
