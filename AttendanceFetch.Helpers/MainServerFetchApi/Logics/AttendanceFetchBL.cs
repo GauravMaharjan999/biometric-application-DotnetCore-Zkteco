@@ -21,6 +21,7 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
         private readonly IConfiguration _configuration;
         private readonly IZKTecoAttendance_DataFetchBL _dataFetchBL;
         private readonly ILogger<AttendanceFetchBL> _logger;
+        private static SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
         public AttendanceFetchBL(IConfiguration configuration, IZKTecoAttendance_DataFetchBL dataFetchBL, ILogger<AttendanceFetchBL> logger)
         {
@@ -71,6 +72,8 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
 
         public async Task<DataResult<MachineInfoViewModel>> PushToMainServer(TriggeredFrom triggeredFrom,bool isDeleteDataRequired = false)
         {
+            await semaphore.WaitAsync();
+
             try
             {
                _logger.LogInformation($"Process {triggeredFrom} : Step 2 Started :  #PushToMainServer Start visit and isDeleteDataRequired is {isDeleteDataRequired} at {DateTime.Now}");
@@ -154,9 +157,12 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
                 return new DataResult<MachineInfoViewModel> { ResultType = ResultType.Failed, Message = "Failed to fetch data " };
 
             }
+            finally
+            {
+                semaphore.Release();
+            }
 
         }
-
 
         public async Task<DataResult<List<BranchDeviceTaggingViewModel>>> GetBranchListDataFromMainServer(TriggeredFrom triggeredFrom)
         {
