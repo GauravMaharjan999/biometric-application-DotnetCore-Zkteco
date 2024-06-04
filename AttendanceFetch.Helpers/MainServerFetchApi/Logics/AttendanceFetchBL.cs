@@ -128,7 +128,9 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
                     var pushResult = await PushRawDataToMainServer(machineInfos,triggeredFrom);
                     if (isDeleteDataRequired)
                     {
-                        foreach(var device in attendanceDevicesToClearAttLogs) {
+                        _logger.LogInformation($"# --Important-- Date: {DateTime.Now}, IsDeletedDataRequired is TRUE and The list of device which is going to be cleared are {attendanceDevicesToClearAttLogs}");
+
+                        foreach (var device in attendanceDevicesToClearAttLogs) {
                             _logger.LogInformation($"Process {triggeredFrom} : Step 5 Started :  #DeleteAttLog Start for device {device} at {DateTime.Now}");
 
                             BackgroundJob.Schedule(() => DeleteAttLog(device), TimeSpan.FromSeconds(20));
@@ -164,7 +166,7 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
 
         }
 
-        public async Task<DataResult<List<BranchDeviceTaggingViewModel>>> GetBranchListDataFromMainServer(TriggeredFrom triggeredFrom)
+        public async Task<DataResult<List<BranchDeviceTaggingViewModel>>> GetBranchListDataFromMainServer(TriggeredFrom triggeredFrom) 
         {
             try
             {
@@ -246,8 +248,10 @@ namespace AttendanceFetch.Helpers.MainServerFetchApi
 
         public async Task<DataResult> DeleteAttLog(AttendanceDevice attendanceDevice)
         {
-
+            _logger.LogWarning($"#################################### Data Delete Started Alert for {attendanceDevice} At {DateTime.Now} ###################################################");
             var result = await _dataFetchBL.DeleteData_Zkteco(attendanceDevice);
+            _logger.LogWarning($"#################################### Data Delete Completed Alert for {attendanceDevice} with {result} At {DateTime.Now} ###################################################");
+
             return result;
         }
         
